@@ -34,7 +34,7 @@ export const Toast = React.memo(function Toast({ toasts, removeToast }) {
       ))}
     </div>
   );
-}
+});
 
 /* ─── Modal ──────────────────────────────────────── */
 export function Modal({ title, children, onClose }) {
@@ -49,7 +49,7 @@ export function Modal({ title, children, onClose }) {
       <div className="bg-navy-800/90 border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col animate-slide-in">
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
           <h3 className="font-serif text-lg font-semibold text-white">{title}</h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+          <button onClick={onClose} aria-label="Cerrar modal" title="Cerrar" className="text-slate-500 hover:text-white transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -78,7 +78,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConf
       </div>
     </div>
   );
-}
+});
 
 /* ─── Form Field ─────────────────────────────────── */
 export const Field = React.memo(function Field({ label, id, type = 'text', value, onChange, options, required, placeholder }) {
@@ -316,6 +316,8 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={safePage === 1}
+              aria-label="Página anterior"
+              title="Página anterior"
               className="px-2.5 py-1 text-xs border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               ←
@@ -324,6 +326,8 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={safePage === totalPages}
+              aria-label="Página siguiente"
+              title="Página siguiente"
               className="px-2.5 py-1 text-xs border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               →
@@ -333,7 +337,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
       </div>
     </div>
   );
-}
+});
 
 /* ─── Stat Card ──────────────────────────────────── */
 export const StatCard = React.memo(function StatCard({ label, value, icon, color = 'accent', hint }) {
@@ -355,7 +359,7 @@ export const StatCard = React.memo(function StatCard({ label, value, icon, color
       {hint && <div className="text-[10px] text-slate-500 uppercase tracking-wider mt-1.5">{hint}</div>}
     </div>
   );
-}
+});
 
 /* ─── Skeleton Row ──────────────────────────────── */
 export function SkeletonTable({ rows = 5, cols = 4 }) {
@@ -390,6 +394,7 @@ export function Collapsible({ title, icon, children, defaultOpen = true }) {
     <div className="bg-navy-800/50 border border-white/10 rounded-2xl overflow-hidden">
       <button
         onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors"
       >
         <span className="flex items-center gap-3 text-white font-serif font-semibold text-base">
@@ -468,7 +473,7 @@ export function DropdownMenu({ trigger, items, align = 'right' }) {
   }, []);
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setOpen(o => !o)} className="flex items-center gap-1.5">
+      <button onClick={() => setOpen(o => !o)} aria-haspopup="menu" aria-expanded={open} className="flex items-center gap-1.5">
         {trigger}
       </button>
       {open && (
