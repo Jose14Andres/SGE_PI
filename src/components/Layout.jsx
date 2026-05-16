@@ -141,7 +141,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <span className="font-serif font-bold text-white">SGE</span>
-          <button onClick={() => onNavigate('perfil')}>
+          <button onClick={() => onNavigate('perfil')} aria-label="Ir al perfil" title="Perfil">
             <Avatar user={user} size="sm" />
           </button>
         </header>
@@ -153,7 +153,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
             <span className="text-slate-700">/</span>
             <span className="text-slate-300 font-medium">{currentTitle}</span>
           </div>
-          <button onClick={() => onNavigate('perfil')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <button onClick={() => onNavigate('perfil')} aria-label="Ir al perfil" title="Perfil" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <Avatar user={user} size="sm" />
             <span className="text-sm text-slate-400">{user.nombre}</span>
           </button>
