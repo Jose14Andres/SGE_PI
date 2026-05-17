@@ -1,8 +1,8 @@
 export const DEMO_USERS = [
-  { id: 'u1', email: 'admin@sge.edu', password: 'admin123', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
-  { id: 'u2', email: 'secretaria@sge.edu', password: 'sec123', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
-  { id: 'u3', email: 'profesor@sge.edu', password: 'prof123', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
-  { id: 'u4', email: 'alumno@sge.edu', password: 'alumno123', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
+  { id: 'u1', email: 'admin@sge.edu', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
+  { id: 'u2', email: 'secretaria@sge.edu', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
+  { id: 'u3', email: 'profesor@sge.edu', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
+  { id: 'u4', email: 'alumno@sge.edu', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
 ];
 
 // ── Helpers internos ─────────────────────────────────────────────────────────

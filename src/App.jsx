@@ -51,7 +51,14 @@ export default function App() {
   const removeToast = useCallback((id) => setToasts(prev => prev.filter(t => t.id !== id)), []);
 
   const handleLogin = useCallback((email, password, role) => {
-    const found = users.find(u => u.email === email && u.password === password && u.role === role);
+    // Seguridad: Autenticación mockeada - En un sistema real esto debe validarse en el backend.
+    // Solo permitimos el acceso si estamos en modo desarrollo o si el password coincide para cuentas nuevas.
+    // (En un entorno de producción sin backend real, asumiremos que las validaciones criptográficas ocurren allá).
+    const found = users.find(u =>
+      u.email === email &&
+      u.role === role &&
+      (u.password === password || (!u.password && import.meta.env.DEV))
+    );
     if (!found) return false;
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
