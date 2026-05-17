@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, lazy, Suspense } from 'react';
 import { StatCard, DataTable, FilterBar, BarChart, Tabs, Select, Collapsible } from './UI.jsx';
+
+const BarChart3D = lazy(() => import('./3D/BarChart3D.jsx'));
 
 /* ────────────────────────────────────────────────
    Helpers
@@ -10,123 +12,123 @@ const asOpt = (v) => ({ value: v, label: v });
 /* ────────────────────────────────────────────────
    Admin Dashboard (dinámico, con filtros)
 ──────────────────────────────────────────────── */
-export function AdminDashboard({ alumnos, profesores, cursos, materias }) {
-  const [filter, setFilter] = useState({ carrera: '', nivel: '' });
+export function AdminDashboard({ alumnos, profesores, cursos }) {
+  const [filter, setFilter] = useState({ rol: '', carrera: '' });
+  const [activeTab, setActiveTab] = useState('usuarios');
 
   const carrerasOpts = uniq(cursos.map(c => c.carrera)).map(asOpt);
-  const nivelesOpts  = uniq(cursos.map(c => c.nivel)).map(asOpt);
 
   const filters = [
+    { key: 'rol', label: 'Rol', options: [asOpt('Alumno'), asOpt('Profesor')] },
     { key: 'carrera', label: 'Carrera', options: carrerasOpts },
-    { key: 'nivel',   label: 'Nivel',   options: nivelesOpts },
   ];
 
-  // Cursos filtrados por selección
-  const cursosFiltrados = useMemo(() => cursos.filter(c =>
-    (!filter.carrera || c.carrera === filter.carrera) &&
-    (!filter.nivel   || c.nivel   === filter.nivel)
-  ), [cursos, filter]);
-  const cursosIdsFiltrados = new Set(cursosFiltrados.map(c => c.id));
-  const alumnosFiltrados = alumnos.filter(a => cursosIdsFiltrados.has(a.cursoId));
-  const materiasFiltradas = materias.filter(m => cursosIdsFiltrados.has(m.cursoId));
-
-  // Charts
-  const alumnosPorCarrera = useMemo(() => {
-    const counts = {};
+  // Consolidar todos los usuarios
+  const todosLosUsuarios = useMemo(() => {
+    const arr = [];
     alumnos.forEach(a => {
       const c = cursos.find(x => x.id === a.cursoId);
-      if (!c) return;
-      counts[c.carrera] = (counts[c.carrera] ?? 0) + 1;
+      arr.push({ ...a, rol: 'Alumno', carrera: c?.carrera || '—', nivel: c?.nivel || '—' });
     });
-    return Object.entries(counts).map(([label, value]) => ({ label, value }));
-  }, [alumnos, cursos]);
+    profesores.forEach(p => {
+      arr.push({ ...p, rol: 'Profesor', carrera: '—', nivel: '—' });
+    });
+    return arr;
+  }, [alumnos, profesores, cursos]);
 
-  const materiasPorCarrera = useMemo(() => {
-    const counts = {};
-    materias.forEach(m => {
-      const c = cursos.find(x => x.id === m.cursoId);
-      if (!c) return;
-      counts[c.carrera] = (counts[c.carrera] ?? 0) + 1;
+  // Filtrar
+  const usuariosFiltrados = useMemo(() => {
+    return todosLosUsuarios.filter(u => {
+      if (filter.rol && u.rol !== filter.rol) return false;
+      if (filter.carrera && u.carrera !== filter.carrera) return false;
+      return true;
     });
-    return Object.entries(counts).map(([label, value]) => ({ label, value }));
-  }, [materias, cursos]);
+  }, [todosLosUsuarios, filter]);
+
+  const columnas = [
+    { key: 'nombre', label: 'Nombre' },
+    { key: 'apellido', label: 'Apellido' },
+    { key: 'email', label: 'Email' },
+    {
+      key: 'rol',
+      label: 'Rol',
+      render: (r) => (
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${r.rol === 'Profesor' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' : 'bg-accent/10 text-accent-light border-accent/20'}`}>
+          {r.rol}
+        </span>
+      )
+    },
+    { key: 'carrera', label: 'Carrera' },
+    {
+      key: 'actions',
+      label: 'Acciones',
+      render: () => (
+        <div className="flex gap-2">
+          <button className="text-xs px-2 py-1 bg-accent/20 text-accent-light rounded hover:bg-accent/40 transition-colors">Editar</button>
+          <button className="text-xs px-2 py-1 bg-red-500/20 text-red-300 rounded hover:bg-red-500/40 transition-colors">Baja</button>
+        </div>
+      )
+    }
+  ];
+
+  const tabs = [
+    { id: 'usuarios', label: 'Gestión de Usuarios', icon: '👥' },
+    { id: 'auditoria', label: 'Logs de Auditoría', icon: '📝' },
+    { id: 'sistema', label: 'Estado del Sistema', icon: '⚙️' },
+  ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-slate-400 text-sm mt-1">Panel general del SGE — vista administrativa</p>
+        <h1 className="font-serif text-2xl font-bold text-white">Consola de Control del Sistema</h1>
+        <p className="text-slate-400 text-sm mt-1">Panel Administrativo SGE_PI</p>
       </div>
-
-      <FilterBar
-        filters={filters}
-        values={filter}
-        onChange={setFilter}
-        onReset={() => setFilter({ carrera: '', nivel: '' })}
-      />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Alumnos"    value={alumnosFiltrados.length}  icon="🎓" color="accent"  hint={filter.carrera || filter.nivel ? 'filtrado' : 'total'} />
-        <StatCard label="Profesores" value={profesores.length}        icon="👨‍🏫" color="emerald" />
-        <StatCard label="Secciones"  value={cursosFiltrados.length}   icon="📚" color="gold"    hint={filter.carrera || filter.nivel ? 'filtrado' : 'total'} />
-        <StatCard label="Materias"   value={materiasFiltradas.length} icon="📋" color="violet"  hint={filter.carrera || filter.nivel ? 'filtrado' : 'total'} />
+        <StatCard label="Estudiantes Activos" value={alumnos.length} icon="🎓" color="accent" />
+        <StatCard label="Personal Docente" value={profesores.length} icon="👨‍🏫" color="emerald" />
+        <StatCard label="Estado Servidores" value="Estable" icon="🟢" color="emerald" hint="Docker OK" />
+        <StatCard label="Alertas de Seguridad" value="0" icon="🛡️" color="gold" hint="Sin reportes" />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Collapsible title="Alumnos por Carrera" icon="📊">
-          <BarChart data={alumnosPorCarrera} color="#6366f1" />
-        </Collapsible>
-        <Collapsible title="Materias por Carrera" icon="📘">
-          <BarChart data={materiasPorCarrera} color="#f59e0b" />
-        </Collapsible>
-      </div>
+      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Collapsible title="Últimos Alumnos Registrados" icon="🆕">
-          <div className="space-y-2">
-            {alumnos.slice(-5).reverse().map(a => {
-              const c = cursos.find(x => x.id === a.cursoId);
-              return (
-                <div key={a.id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
-                  <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-semibold text-accent-light">
-                    {a.nombre[0]}{a.apellido[0]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-slate-200 truncate">{a.nombre} {a.apellido}</div>
-                    <div className="text-xs text-slate-500 truncate">{a.email}</div>
-                  </div>
-                  <span className="text-[10px] text-slate-500 whitespace-nowrap">{c?.carrera} · {c?.nivel}</span>
-                </div>
-              );
-            })}
+      {activeTab === 'usuarios' && (
+        <div className="space-y-4 animate-fade-in">
+          <FilterBar
+            filters={filters}
+            values={filter}
+            onChange={setFilter}
+            onReset={() => setFilter({ rol: '', carrera: '' })}
+          />
+
+          <div className="bg-navy-800/60 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-serif text-lg font-semibold text-white">Directorio Central</h2>
+              <button className="bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent-hover transition-colors shadow-lg shadow-accent/20">
+                + Nuevo Usuario
+              </button>
+            </div>
+            <DataTable columns={columnas} data={usuariosFiltrados} pageSize={10} />
           </div>
-        </Collapsible>
+        </div>
+      )}
 
-        <Collapsible title="Secciones Activas (filtradas)" icon="📚">
-          <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
-            {cursosFiltrados.length === 0
-              ? <p className="text-slate-500 text-sm">No hay secciones con esos filtros.</p>
-              : cursosFiltrados.slice(0, 10).map(c => {
-                  const count = alumnos.filter(a => a.cursoId === c.id).length;
-                  return (
-                    <div key={c.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm text-slate-200 truncate">{c.nombre}</div>
-                        <div className="text-xs text-slate-500">{c.anioLectivo}</div>
-                      </div>
-                      <span className="text-xs bg-accent/10 text-accent-light border border-accent/20 px-2 py-0.5 rounded-full whitespace-nowrap">
-                        {count} alumno{count !== 1 ? 's' : ''}
-                      </span>
-                    </div>
-                  );
-                })
-            }
-            {cursosFiltrados.length > 10 && (
-              <p className="text-xs text-slate-500 pt-2 text-center">+ {cursosFiltrados.length - 10} secciones más…</p>
-            )}
-          </div>
-        </Collapsible>
-      </div>
+      {activeTab === 'auditoria' && (
+        <div className="animate-fade-in bg-navy-800/60 border border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+           <div className="text-4xl mb-4">📝</div>
+           <h3 className="text-white font-medium mb-1">Módulo de Auditoría en construcción</h3>
+           <p className="text-slate-500 text-sm">Visualice el registro de altas, bajas y modificaciones.</p>
+        </div>
+      )}
+
+      {activeTab === 'sistema' && (
+        <div className="animate-fade-in bg-navy-800/60 border border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+           <div className="text-4xl mb-4">⚙️</div>
+           <h3 className="text-white font-medium mb-1">Módulo de Sistema en construcción</h3>
+           <p className="text-slate-500 text-sm">Monitoreo de rendimiento, memoria y conectividad base de datos.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -198,100 +200,98 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
 /* ────────────────────────────────────────────────
    Profesor Dashboard (con dropdown de curso)
 ──────────────────────────────────────────────── */
-export function ProfesorDashboard({ user, materias, cursos, alumnos }) {
+export function ProfesorDashboard({ user, materias, alumnos }) {
   const misMaterias = materias.filter(m => m.profesorId === user.profesorId);
   const misCursoIds = [...new Set(misMaterias.map(m => m.cursoId))];
-  const misCursos = cursos.filter(c => misCursoIds.includes(c.id));
   const todosMisAlumnos = alumnos.filter(a => misCursoIds.includes(a.cursoId));
 
-  const [selectedCurso, setSelectedCurso] = useState('');
+  const [activeTab, setActiveTab] = useState('calificaciones');
+  const [selectedMateria, setSelectedMateria] = useState(misMaterias[0]?.id || '');
 
-  const cursoElegido = cursos.find(c => c.id === selectedCurso);
-  const materiasDelCurso = selectedCurso
-    ? misMaterias.filter(m => m.cursoId === selectedCurso)
-    : misMaterias;
-  const alumnosDelCurso = selectedCurso
-    ? alumnos.filter(a => a.cursoId === selectedCurso)
-    : todosMisAlumnos;
+  const materiaElegida = misMaterias.find(m => m.id === selectedMateria);
+  const alumnosDelCurso = materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos;
+
+  const tabs = [
+    { id: 'horarios', label: 'Mis Horarios', icon: '📅' },
+    { id: 'asistencia', label: 'Control de Asistencia', icon: '✅' },
+    { id: 'calificaciones', label: 'Registro de Calificaciones', icon: '📝' },
+  ];
+
+  const colCalificaciones = [
+    { key: 'nombre', label: 'Nombre' },
+    { key: 'apellido', label: 'Apellido' },
+    { key: 'email', label: 'Email' },
+    {
+      key: 'actions',
+      label: 'Acciones',
+      render: () => (
+        <div className="flex gap-2">
+          <button className="text-xs px-2 py-1 bg-accent/20 text-accent-light rounded hover:bg-accent/40 transition-colors">Editar Nota</button>
+          <button className="text-xs px-2 py-1 bg-red-500/20 text-red-300 rounded hover:bg-red-500/40 transition-colors">Reportar Falta</button>
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-white">Mi Panel</h1>
-        <p className="text-slate-400 text-sm mt-1">Hola, {user.nombre} {user.apellido} — {user.email}</p>
+        <h1 className="font-serif text-2xl font-bold text-white">Panel de Gestión de Clases</h1>
+        <p className="text-slate-400 text-sm mt-1">Prof. {user.nombre} {user.apellido}</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <StatCard label="Mis Materias" value={misMaterias.length}     icon="📋" color="accent" />
-        <StatCard label="Mis Secciones" value={misCursoIds.length}    icon="📚" color="gold" />
-        <StatCard label="Mis Alumnos" value={todosMisAlumnos.length}  icon="🎓" color="emerald" />
+      {/* Sección Superior: StatCards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <StatCard label="Clases del Día" value="3" icon="📅" color="accent" hint="Hoy" />
+        <StatCard label="Alumnos a cargo" value={todosMisAlumnos.length} icon="🎓" color="emerald" hint="Total" />
+        <StatCard label="Tareas por Calificar" value="12" icon="📝" color="gold" hint="Pendientes" />
+        <StatCard label="Alertas" value="2" icon="⚠️" color="red" hint="Alumnos en riesgo" />
       </div>
+
+      {/* Cuerpo Principal */}
+      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
 
       <div className="bg-navy-900/40 border border-white/5 rounded-xl p-3 flex flex-wrap items-end gap-3">
         <div className="text-xs text-slate-500 uppercase tracking-wider pr-2 flex items-center gap-2">
-          <span>📚</span> Filtrar por sección
+          <span>📚</span> Seleccionar Materia
         </div>
         <Select
-          value={selectedCurso}
-          onChange={setSelectedCurso}
-          options={misCursos.map(c => ({ value: c.id, label: c.nombre }))}
-          placeholder="— Todas mis secciones —"
+          value={selectedMateria}
+          onChange={setSelectedMateria}
+          options={misMaterias.map(m => ({ value: m.id, label: m.nombre }))}
+          placeholder="— Seleccione materia —"
           compact
         />
-        {selectedCurso && (
-          <button onClick={() => setSelectedCurso('')} className="text-xs px-3 py-1.5 text-slate-400 hover:text-white border border-white/10 hover:border-white/20 rounded-lg">
-            Limpiar
-          </button>
-        )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Collapsible title={cursoElegido ? `Materias en ${cursoElegido.nombre}` : 'Mis Materias Asignadas'} icon="📋">
-          {materiasDelCurso.length === 0
-            ? <p className="text-slate-500 text-sm">No tienes materias asignadas aún.</p>
-            : <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
-                {materiasDelCurso.map(m => {
-                  const curso = cursos.find(c => c.id === m.cursoId);
-                  return (
-                    <div key={m.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm text-slate-200 font-medium truncate">{m.nombre}</div>
-                        <div className="text-xs text-slate-500 truncate">{curso?.nombre}</div>
-                      </div>
-                      <span className="text-xs text-gold bg-gold/10 border border-gold/20 px-2 py-0.5 rounded-full whitespace-nowrap">{m.creditos} créditos</span>
-                    </div>
-                  );
-                })}
-              </div>
-          }
-        </Collapsible>
+      {activeTab === 'calificaciones' && (
+        <div className="animate-fade-in bg-navy-800/60 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+          <h2 className="font-serif text-lg font-semibold text-white mb-4">
+            Alumnos {materiaElegida ? `de ${materiaElegida.nombre}` : ''}
+          </h2>
+          {alumnosDelCurso.length > 0 ? (
+            <DataTable columns={colCalificaciones} data={alumnosDelCurso} pageSize={10} />
+          ) : (
+            <p className="text-slate-500 text-sm">No hay alumnos asignados a esta materia.</p>
+          )}
+        </div>
+      )}
 
-        <Collapsible title={cursoElegido ? `Alumnos de ${cursoElegido.nombre}` : 'Mis Alumnos'} icon="🎓">
-          {alumnosDelCurso.length === 0
-            ? <p className="text-slate-500 text-sm">No hay alumnos que mostrar.</p>
-            : <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
-                {alumnosDelCurso.slice(0, 12).map(a => {
-                  const c = cursos.find(x => x.id === a.cursoId);
-                  return (
-                    <div key={a.id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
-                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs font-semibold text-emerald-300">
-                        {a.nombre[0]}{a.apellido[0]}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm text-slate-200 truncate">{a.nombre} {a.apellido}</div>
-                        <div className="text-xs text-slate-500 truncate">{a.email}</div>
-                      </div>
-                      <span className="text-[10px] text-slate-500 whitespace-nowrap">{c?.carrera} · {c?.nivel}</span>
-                    </div>
-                  );
-                })}
-                {alumnosDelCurso.length > 12 && (
-                  <p className="text-xs text-slate-500 pt-2 text-center">+ {alumnosDelCurso.length - 12} alumnos más…</p>
-                )}
-              </div>
-          }
-        </Collapsible>
-      </div>
+      {activeTab === 'asistencia' && (
+        <div className="animate-fade-in bg-navy-800/60 border border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+           <div className="text-4xl mb-4">✅</div>
+           <h3 className="text-white font-medium mb-1">Módulo de Asistencia en construcción</h3>
+           <p className="text-slate-500 text-sm">Seleccione la pestaña de calificaciones para ver el listado interactivo.</p>
+        </div>
+      )}
+
+      {activeTab === 'horarios' && (
+        <div className="animate-fade-in bg-navy-800/60 border border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+           <div className="text-4xl mb-4">📅</div>
+           <h3 className="text-white font-medium mb-1">Módulo de Horarios en construcción</h3>
+           <p className="text-slate-500 text-sm">Seleccione la pestaña de calificaciones para ver el listado interactivo.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -299,24 +299,24 @@ export function ProfesorDashboard({ user, materias, cursos, alumnos }) {
 /* ────────────────────────────────────────────────
    Alumno Dashboard (con tabs: Perfil / Materias / Horario)
 ──────────────────────────────────────────────── */
-export function AlumnoDashboard({ user, alumnos, cursos, materias, profesores }) {
+export function AlumnoDashboard({ user, alumnos, cursos, materias }) {
   const alumno = alumnos.find(a => a.email === user.email);
   const seccion = cursos.find(c => c.id === alumno?.cursoId);
   const myMaterias = materias.filter(m => m.cursoId === alumno?.cursoId);
 
-  const [tab, setTab] = useState('resumen');
-
-  const tabs = [
-    { id: 'resumen',  label: 'Resumen',    icon: '📋' },
-    { id: 'materias', label: 'Mis Materias', icon: '📚' },
-    { id: 'horario',  label: 'Mi Horario', icon: '📅' },
+  // Datos mockeados para rendimiento
+  const rendimientoData = [
+    { label: 'Parcial 1', value: 85 },
+    { label: 'Parcial 2', value: 92 },
+    { label: 'Parcial 3', value: 78 },
+    { label: 'Examen', value: 88 },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-white">Mi Perfil Académico</h1>
+          <h1 className="font-serif text-2xl font-bold text-white">Mi Progreso Académico</h1>
           <p className="text-slate-400 text-sm mt-1">Hola, {user.nombre} {user.apellido}</p>
         </div>
         {seccion && (
@@ -327,53 +327,68 @@ export function AlumnoDashboard({ user, alumnos, cursos, materias, profesores })
         )}
       </div>
 
-      {seccion && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <StatCard label="Carrera"  value={seccion.carrera}             icon="🎓" color="accent" />
-          <StatCard label="Nivel"    value={seccion.nivel}               icon="📊" color="gold" />
-          <StatCard label="Sección"  value={`Sección ${seccion.paralelo}`} icon="🏫" color="emerald" />
-          <StatCard label="Materias" value={myMaterias.length}           icon="📋" color="violet" />
+      {/* Sección Superior: StatCards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <StatCard label="Promedio General" value="8.9" icon="📈" color="gold" hint="Sobre 10" />
+        <StatCard label="Asistencia" value="95%" icon="✅" color="emerald" hint="Este semestre" />
+        <StatCard label="Materias Aprobadas" value={myMaterias.length > 0 ? myMaterias.length - 1 : 0} icon="📚" color="accent" hint="Histórico" />
+        <StatCard label="Próxima Evaluación" value="2 días" icon="⏳" color="violet" hint="Física II" />
+      </div>
+
+      {/* Cuerpo Principal: 2 columnas */}
+      <div className="grid lg:grid-cols-12 gap-6">
+        {/* Columna Izquierda (65%) */}
+        <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {[
+            { id: 'materias', label: 'Mis Materias', icon: '📚', desc: `${myMaterias.length} registradas` },
+            { id: 'horarios', label: 'Horarios', icon: '📅', desc: 'Clases y tutorías' },
+            { id: 'calificaciones', label: 'Calificaciones', icon: '📝', desc: 'Historial académico' },
+            { id: 'tramites', label: 'Trámites', icon: '📄', desc: 'Solicitudes y pagos' },
+            { id: 'evaluacion', label: 'Evaluación Docente', icon: '⭐', desc: 'Pendiente (2)' },
+          ].map(modulo => (
+            <div
+              key={modulo.id}
+              className="bg-navy-800/60 border border-white/10 rounded-2xl p-5 cursor-pointer hover:scale-[1.02] hover:border-accent/40 transition-all group flex flex-col items-center text-center gap-3 backdrop-blur-sm"
+            >
+              <div className="w-12 h-12 rounded-full bg-navy-900 flex items-center justify-center text-2xl group-hover:bg-accent/20 transition-colors">
+                {modulo.icon}
+              </div>
+              <div>
+                <h3 className="text-white font-medium text-sm">{modulo.label}</h3>
+                <p className="text-xs text-slate-400 mt-1">{modulo.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      )}
 
-      <Tabs tabs={tabs} active={tab} onChange={setTab} />
-
-      {tab === 'resumen' && (
-        <div className="grid md:grid-cols-2 gap-5 animate-fade-in">
-          <div className="bg-navy-800/60 border border-white/10 rounded-2xl p-5">
-            <h2 className="font-serif text-base font-semibold text-white mb-4">Información Personal</h2>
-            <dl className="space-y-3 text-sm">
-              <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">Nombre:</dt><dd className="text-slate-200">{alumno?.nombre} {alumno?.apellido}</dd></div>
-              <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">Email:</dt><dd className="text-slate-200 break-all">{alumno?.email}</dd></div>
-              <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">F. Nacimiento:</dt><dd className="text-slate-200">{alumno?.fechaNacimiento || '—'}</dd></div>
-            </dl>
+        {/* Columna Derecha (35%) */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-navy-800/60 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+            <h2 className="font-serif text-base font-semibold text-white mb-4">Rendimiento (Último período)</h2>
+            <div className="h-[200px] w-full rounded-xl overflow-hidden bg-navy-900/50">
+              <Suspense fallback={<div className="h-full flex items-center justify-center text-slate-500">Cargando 3D...</div>}>
+                <BarChart3D data={rendimientoData} />
+              </Suspense>
+            </div>
           </div>
-          <div className="bg-navy-800/60 border border-white/10 rounded-2xl p-5">
-            <h2 className="font-serif text-base font-semibold text-white mb-4">Inscripción Académica</h2>
-            {seccion
-              ? <dl className="space-y-3 text-sm">
-                  <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">Carrera:</dt><dd className="text-slate-200 font-semibold">{seccion.carrera}</dd></div>
-                  <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">Nivel:</dt><dd className="text-slate-200">{seccion.nivel}</dd></div>
-                  <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">Sección:</dt><dd className="text-slate-200">Sección {seccion.paralelo}</dd></div>
-                  <div className="flex gap-2"><dt className="text-slate-500 w-28 shrink-0">Período:</dt><dd className="text-slate-200">{seccion.anioLectivo}</dd></div>
-                </dl>
-              : <p className="text-slate-500 text-sm">No asignado a ninguna sección.</p>
-            }
+
+          <div className="bg-navy-800/60 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+            <h2 className="font-serif text-base font-semibold text-white mb-3 flex items-center gap-2">
+              <span>🔔</span> Avisos del Campus
+            </h2>
+            <div className="space-y-3">
+              <div className="p-3 bg-accent/10 border border-accent/20 rounded-xl">
+                <p className="text-xs font-medium text-accent-light">Inicio de matrículas extraordinarias</p>
+                <p className="text-[10px] text-slate-400 mt-1">15 de Junio, 2024</p>
+              </div>
+              <div className="p-3 bg-white/5 border border-white/10 rounded-xl">
+                <p className="text-xs font-medium text-slate-200">Mantenimiento del Sistema</p>
+                <p className="text-[10px] text-slate-400 mt-1">Este fin de semana de 00:00 a 04:00</p>
+              </div>
+            </div>
           </div>
         </div>
-      )}
-
-      {tab === 'materias' && (
-        <div className="animate-fade-in">
-          <AlumnoMisMaterias user={user} alumnos={alumnos} materias={materias} profesores={profesores} cursos={cursos} compact />
-        </div>
-      )}
-
-      {tab === 'horario' && (
-        <div className="animate-fade-in">
-          <AlumnoHorario user={user} alumnos={alumnos} materias={materias} profesores={profesores} cursos={cursos} />
-        </div>
-      )}
+      </div>
     </div>
   );
 }
