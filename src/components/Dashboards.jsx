@@ -487,14 +487,20 @@ export function ProfesorMisAlumnos({ user, materias, alumnos, cursos }) {
    Alumno: Mis Materias
 ──────────────────────────────────────────────── */
 export function AlumnoMisMaterias({ user, alumnos, materias, profesores, compact = false }) {
-  const alumno = alumnos.find(a => a.email === user.email);
-  const myMaterias = materias.filter(m => m.cursoId === alumno?.cursoId);
+  const alumno = useMemo(() => alumnos.find(a => a.email === user.email), [alumnos, user.email]);
+  const myMaterias = useMemo(() => materias.filter(m => m.cursoId === alumno?.cursoId), [materias, alumno?.cursoId]);
 
   const [filter, setFilter] = useState({ profesorId: '' });
-  const profOpts = uniq(myMaterias.map(m => m.profesorId))
-    .map(id => profesores.find(p => p.id === id))
+
+  // ⚡ Bolt: O(1) Map Lookups for Related Entities
+  // Transforms an O(N) find operation to O(1) by creating a dictionary of professors.
+  // This reduces re-renders computation time, avoiding O(N x M) operations when rendering options and table rows.
+  const profById = useMemo(() => Object.fromEntries(profesores.map(p => [p.id, p])), [profesores]);
+
+  const profOpts = useMemo(() => uniq(myMaterias.map(m => m.profesorId))
+    .map(id => profById[id])
     .filter(Boolean)
-    .map(p => ({ value: p.id, label: `${p.nombre} ${p.apellido}` }));
+    .map(p => ({ value: p.id, label: `${p.nombre} ${p.apellido}` })), [myMaterias, profById]);
 
   const filters = [
     { key: 'profesorId', label: 'Profesor', options: profOpts },
@@ -508,7 +514,7 @@ export function AlumnoMisMaterias({ user, alumnos, materias, profesores, compact
     { key: 'creditos', label: 'Créditos' },
     {
       key: 'profesorId', label: 'Profesor',
-      render: r => { const p = profesores.find(x => x.id === r.profesorId); return p ? `${p.nombre} ${p.apellido}` : '—'; },
+      render: r => { const p = profById[r.profesorId]; return p ? `${p.nombre} ${p.apellido}` : '—'; },
     },
   ];
 
@@ -557,12 +563,17 @@ function buildSchedule(materias) {
 }
 
 export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
-  const alumno = alumnos?.find(a => a.email === user.email);
-  const seccion = cursos?.find(c => c.id === alumno?.cursoId);
+  const alumno = useMemo(() => alumnos?.find(a => a.email === user.email), [alumnos, user.email]);
+  const seccion = useMemo(() => cursos?.find(c => c.id === alumno?.cursoId), [cursos, alumno?.cursoId]);
   const myMaterias = useMemo(
     () => materias?.filter(m => m.cursoId === alumno?.cursoId) ?? [],
     [materias, alumno?.cursoId]
   );
+
+  // ⚡ Bolt: O(1) Map Lookups for Related Entities
+  // Avoids O(N x M) complexity during the schedule grid rendering loop by pre-computing
+  // a dictionary for O(1) lookups. Noticeable performance improvement on complex schedule views.
+  const profById = useMemo(() => Object.fromEntries((profesores || []).map(p => [p.id, p])), [profesores]);
 
   const [view, setView] = useState('semanal');
   const [diaFiltro, setDiaFiltro] = useState('');
@@ -634,7 +645,7 @@ export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
                               <div className="text-accent-light text-xs font-semibold truncate">{m.nombre}</div>
                               <div className="text-[10px] text-slate-500 truncate">{m.codigo}</div>
                               {profesores && (() => {
-                                const p = profesores.find(x => x.id === m.profesorId);
+                                const p = profById[m.profesorId];
                                 return p ? <div className="text-[10px] text-slate-400 mt-1 truncate">Prof. {p.apellido}</div> : null;
                               })()}
                             </div>
