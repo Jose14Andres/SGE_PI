@@ -39,13 +39,13 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
     setEditMode(false);
   };
 
-  const handleSavePassword = () => {
+  const handleSavePassword = async () => {
     setPwSuccess(false);
     const { current, nuevo, confirmar } = pwFields;
     if (!current || !nuevo || !confirmar) { setPwError('Completa todos los campos.'); return; }
     if (nuevo.length < 6) { setPwError('La nueva contraseña debe tener al menos 6 caracteres.'); return; }
     if (nuevo !== confirmar) { setPwError('Las contraseñas nuevas no coinciden.'); return; }
-    const ok = onChangePassword(current, nuevo);
+    const ok = await onChangePassword(current, nuevo);
     if (!ok) { setPwError('La contraseña actual es incorrecta.'); return; }
     setPwError('');
     setPwSuccess(true);
