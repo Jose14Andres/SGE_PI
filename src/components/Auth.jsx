@@ -13,11 +13,11 @@ export default function Auth({ onLogin }) {
   const [role, setRole] = useState('Administrador');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
-    const result = onLogin(email, password, role);
+    const result = await onLogin(email, password, role);
     if (!result) {
       setError('Credenciales incorrectas o rol no coincide.');
       setPassword(''); // Seguridad: limpiar input password en error
