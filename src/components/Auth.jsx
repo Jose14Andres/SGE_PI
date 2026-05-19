@@ -13,25 +13,27 @@ export default function Auth({ onLogin }) {
   const [role, setRole] = useState('Administrador');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
-    const result = onLogin(email, password, role);
+    const result = await onLogin(email, password, role);
     if (!result) {
       setError('Credenciales incorrectas o rol no coincide.');
       setPassword(''); // Seguridad: limpiar input password en error
     }
   };
 
+  // Seguridad: Credenciales removidas del código fuente.
+  // En modo DEV el backend mockeado procesará el login solo con rol/email.
   const demos = [
-    { label: 'Admin', email: 'admin@sge.edu', pass: 'admin123', role: 'Administrador' },
-    { label: 'Secretaria', email: 'secretaria@sge.edu', pass: 'sec123', role: 'Secretaria' },
-    { label: 'Profesor', email: 'profesor@sge.edu', pass: 'prof123', role: 'Profesor' },
-    { label: 'Alumno', email: 'alumno@sge.edu', pass: 'alumno123', role: 'Alumno' },
+    { label: 'Admin', email: 'admin@sge.edu', role: 'Administrador' },
+    { label: 'Secretaria', email: 'secretaria@sge.edu', role: 'Secretaria' },
+    { label: 'Profesor', email: 'profesor@sge.edu', role: 'Profesor' },
+    { label: 'Alumno', email: 'alumno@sge.edu', role: 'Alumno' },
   ];
 
-  const fillDemo = (d) => { setEmail(d.email); setPassword(d.pass); setRole(d.role); setError(''); };
+  const fillDemo = (d) => { setEmail(d.email); setPassword('mock_password'); setRole(d.role); setError(''); };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 animate-fade-in">
@@ -59,6 +61,7 @@ export default function Auth({ onLogin }) {
                 aria-label="Correo Electrónico"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                maxLength={100}
                 placeholder="usuario@sge.edu"
                 className="w-full bg-navy-900/60 border border-white/10 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all text-sm"
               />
@@ -71,6 +74,7 @@ export default function Auth({ onLogin }) {
                 aria-label="Contraseña"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                maxLength={100}
                 placeholder="••••••••"
                 className="w-full bg-navy-900/60 border border-white/10 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all text-sm"
               />
