@@ -1,8 +1,8 @@
 export const DEMO_USERS = [
-  { id: 'u1', email: 'admin@sge.edu', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
-  { id: 'u2', email: 'secretaria@sge.edu', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
-  { id: 'u3', email: 'profesor@sge.edu', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
-  { id: 'u4', email: 'alumno@sge.edu', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
+  { id: 'u1', email: 'admin@sge.edu', password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
+  { id: 'u2', email: 'secretaria@sge.edu', password: 'ee63c6506c68d4613b9553820393f22db66a1dbc9ba6dc5640df9fce741e6258', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
+  { id: 'u3', email: 'profesor@sge.edu', password: '00624b02e1f9b996a3278f559d5d55313552ad2c0bafc82adfd975c12df61eaf', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
+  { id: 'u4', email: 'alumno@sge.edu', password: 'c1042ecc51482cef39f2e89e1273a35074db7f873f1ac6050efd546a9bceefc0', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
 ];
 
 // ── Helpers internos ─────────────────────────────────────────────────────────

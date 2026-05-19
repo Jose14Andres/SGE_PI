@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 
 import { DEMO_USERS, INITIAL_CURSOS, INITIAL_PROFESORES, INITIAL_MATERIAS, INITIAL_ALUMNOS } from './data.js';
+import { hashPassword } from './utils/crypto.js';
 import Auth from './components/Auth.jsx';
 import Layout from './components/Layout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
@@ -50,15 +51,9 @@ export default function App() {
 
   const removeToast = useCallback((id) => setToasts(prev => prev.filter(t => t.id !== id)), []);
 
-  const handleLogin = useCallback((email, password, role) => {
-    // Seguridad: Autenticación mockeada - En un sistema real esto debe validarse en el backend.
-    // Solo permitimos el acceso si estamos en modo desarrollo o si el password coincide para cuentas nuevas.
-    // (En un entorno de producción sin backend real, asumiremos que las validaciones criptográficas ocurren allá).
-    const found = users.find(u =>
-      u.email === email &&
-      u.role === role &&
-      (u.password === password || (!u.password && import.meta.env.DEV))
-    );
+  const handleLogin = useCallback(async (email, password, role) => {
+    const hashedPassword = await hashPassword(password);
+    const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
     if (!found) return false;
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
@@ -92,10 +87,12 @@ export default function App() {
     addToast('Datos actualizados correctamente');
   }, [user, addToast]);
 
-  const handleChangePassword = useCallback((currentPassword, newPassword) => {
-    const found = users.find(u => u.id === user.id && u.password === currentPassword);
+  const handleChangePassword = useCallback(async (currentPassword, newPassword) => {
+    const hashedCurrent = await hashPassword(currentPassword);
+    const found = users.find(u => u.id === user.id && u.password === hashedCurrent);
     if (!found) return false;
-    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, password: newPassword } : u));
+    const hashedNew = await hashPassword(newPassword);
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, password: hashedNew } : u));
     addToast('Contraseña actualizada correctamente');
     return true;
   }, [user, users, addToast]);
@@ -115,14 +112,15 @@ export default function App() {
   };
 
   // ── Agregar alumno + crear cuenta de acceso ──
-  const handleAddAlumno = useCallback((data) => {
+  const handleAddAlumno = useCallback(async (data) => {
     const { password, ...alumnoData } = data;
     const newId = uid();
     setAlumnos(prev => [...prev, { ...alumnoData, id: newId }]);
+    const hashedPassword = await hashPassword(password);
     setUsers(prev => [...prev, {
       id: `u_${newId}`,
       email: alumnoData.email,
-      password: password,
+      password: hashedPassword,
       role: 'Alumno',
       nombre: alumnoData.nombre,
       apellido: alumnoData.apellido,
