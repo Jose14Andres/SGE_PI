@@ -30,26 +30,28 @@ export function AdminDashboard({ alumnos, profesores, cursos, materias }) {
   const alumnosFiltrados = alumnos.filter(a => cursosIdsFiltrados.has(a.cursoId));
   const materiasFiltradas = materias.filter(m => cursosIdsFiltrados.has(m.cursoId));
 
+  const cursoById = useMemo(() => Object.fromEntries(cursos.map(c => [c.id, c])), [cursos]);
+
   // Charts
   const alumnosPorCarrera = useMemo(() => {
     const counts = {};
     alumnos.forEach(a => {
-      const c = cursos.find(x => x.id === a.cursoId);
+      const c = cursoById[a.cursoId];
       if (!c) return;
       counts[c.carrera] = (counts[c.carrera] ?? 0) + 1;
     });
     return Object.entries(counts).map(([label, value]) => ({ label, value }));
-  }, [alumnos, cursos]);
+  }, [alumnos, cursoById]);
 
   const materiasPorCarrera = useMemo(() => {
     const counts = {};
     materias.forEach(m => {
-      const c = cursos.find(x => x.id === m.cursoId);
+      const c = cursoById[m.cursoId];
       if (!c) return;
       counts[c.carrera] = (counts[c.carrera] ?? 0) + 1;
     });
     return Object.entries(counts).map(([label, value]) => ({ label, value }));
-  }, [materias, cursos]);
+  }, [materias, cursoById]);
 
   return (
     <div className="space-y-6">
@@ -85,7 +87,7 @@ export function AdminDashboard({ alumnos, profesores, cursos, materias }) {
         <Collapsible title="Últimos Alumnos Registrados" icon="🆕">
           <div className="space-y-2">
             {alumnos.slice(-5).reverse().map(a => {
-              const c = cursos.find(x => x.id === a.cursoId);
+              const c = cursoById[a.cursoId];
               return (
                 <div key={a.id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
                   <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-semibold text-accent-light">
@@ -204,9 +206,11 @@ export function ProfesorDashboard({ user, materias, cursos, alumnos }) {
   const misCursos = cursos.filter(c => misCursoIds.includes(c.id));
   const todosMisAlumnos = alumnos.filter(a => misCursoIds.includes(a.cursoId));
 
+  const cursoById = useMemo(() => Object.fromEntries(cursos.map(c => [c.id, c])), [cursos]);
+
   const [selectedCurso, setSelectedCurso] = useState('');
 
-  const cursoElegido = cursos.find(c => c.id === selectedCurso);
+  const cursoElegido = cursoById[selectedCurso];
   const materiasDelCurso = selectedCurso
     ? misMaterias.filter(m => m.cursoId === selectedCurso)
     : misMaterias;
@@ -251,7 +255,7 @@ export function ProfesorDashboard({ user, materias, cursos, alumnos }) {
             ? <p className="text-slate-500 text-sm">No tienes materias asignadas aún.</p>
             : <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
                 {materiasDelCurso.map(m => {
-                  const curso = cursos.find(c => c.id === m.cursoId);
+                  const curso = cursoById[m.cursoId];
                   return (
                     <div key={m.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
                       <div className="min-w-0 flex-1">
@@ -271,7 +275,7 @@ export function ProfesorDashboard({ user, materias, cursos, alumnos }) {
             ? <p className="text-slate-500 text-sm">No hay alumnos que mostrar.</p>
             : <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
                 {alumnosDelCurso.slice(0, 12).map(a => {
-                  const c = cursos.find(x => x.id === a.cursoId);
+                  const c = cursoById[a.cursoId];
                   return (
                     <div key={a.id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
                       <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs font-semibold text-emerald-300">
@@ -386,6 +390,8 @@ export function ProfesorMisMaterias({ user, materias, cursos }) {
   const misCursoIds = [...new Set(misMaterias.map(m => m.cursoId))];
   const misCursos = cursos.filter(c => misCursoIds.includes(c.id));
 
+  const cursoById = useMemo(() => Object.fromEntries(cursos.map(c => [c.id, c])), [cursos]);
+
   const [filter, setFilter] = useState({ carrera: '', nivel: '', cursoId: '' });
   const carrerasOpts = uniq(misCursos.map(c => c.carrera)).map(asOpt);
   const nivelesOpts  = uniq(misCursos.map(c => c.nivel)).map(asOpt);
@@ -398,7 +404,7 @@ export function ProfesorMisMaterias({ user, materias, cursos }) {
   ];
 
   const filtered = misMaterias.filter(m => {
-    const c = cursos.find(x => x.id === m.cursoId);
+    const c = cursoById[m.cursoId];
     if (filter.carrera && c?.carrera !== filter.carrera) return false;
     if (filter.nivel   && c?.nivel   !== filter.nivel)   return false;
     if (filter.cursoId && m.cursoId  !== filter.cursoId) return false;
@@ -409,9 +415,9 @@ export function ProfesorMisMaterias({ user, materias, cursos }) {
     { key: 'nombre',   label: 'Materia' },
     { key: 'codigo',   label: 'Código' },
     { key: 'creditos', label: 'Créditos' },
-    { key: 'carrera',  label: 'Carrera', render: r => cursos.find(c => c.id === r.cursoId)?.carrera ?? '—' },
-    { key: 'nivel',    label: 'Nivel',   render: r => cursos.find(c => c.id === r.cursoId)?.nivel ?? '—' },
-    { key: 'paralelo', label: 'Sección', render: r => cursos.find(c => c.id === r.cursoId)?.paralelo ?? '—' },
+    { key: 'carrera',  label: 'Carrera', render: r => cursoById[r.cursoId]?.carrera ?? '—' },
+    { key: 'nivel',    label: 'Nivel',   render: r => cursoById[r.cursoId]?.nivel ?? '—' },
+    { key: 'paralelo', label: 'Sección', render: r => cursoById[r.cursoId]?.paralelo ?? '—' },
   ];
 
   return (
@@ -435,6 +441,8 @@ export function ProfesorMisAlumnos({ user, materias, alumnos, cursos }) {
   const misCursos = cursos.filter(c => misCursoIds.includes(c.id));
   const misAlumnos = alumnos.filter(a => misCursoIds.includes(a.cursoId));
 
+  const cursoById = useMemo(() => Object.fromEntries(cursos.map(c => [c.id, c])), [cursos]);
+
   const [filter, setFilter] = useState({ carrera: '', nivel: '', cursoId: '' });
   const carrerasOpts = uniq(misCursos.map(c => c.carrera)).map(asOpt);
   const nivelesOpts  = uniq(misCursos.map(c => c.nivel)).map(asOpt);
@@ -447,7 +455,7 @@ export function ProfesorMisAlumnos({ user, materias, alumnos, cursos }) {
   ];
 
   const filtered = misAlumnos.filter(a => {
-    const c = cursos.find(x => x.id === a.cursoId);
+    const c = cursoById[a.cursoId];
     if (filter.carrera && c?.carrera !== filter.carrera) return false;
     if (filter.nivel   && c?.nivel   !== filter.nivel)   return false;
     if (filter.cursoId && a.cursoId  !== filter.cursoId) return false;
@@ -458,9 +466,9 @@ export function ProfesorMisAlumnos({ user, materias, alumnos, cursos }) {
     { key: 'nombre',   label: 'Nombre' },
     { key: 'apellido', label: 'Apellido' },
     { key: 'email',    label: 'Email' },
-    { key: 'carrera',  label: 'Carrera', render: r => cursos.find(c => c.id === r.cursoId)?.carrera ?? '—' },
-    { key: 'nivel',    label: 'Nivel',   render: r => cursos.find(c => c.id === r.cursoId)?.nivel ?? '—' },
-    { key: 'paralelo', label: 'Sección', render: r => cursos.find(c => c.id === r.cursoId)?.paralelo ?? '—' },
+    { key: 'carrera',  label: 'Carrera', render: r => cursoById[r.cursoId]?.carrera ?? '—' },
+    { key: 'nivel',    label: 'Nivel',   render: r => cursoById[r.cursoId]?.nivel ?? '—' },
+    { key: 'paralelo', label: 'Sección', render: r => cursoById[r.cursoId]?.paralelo ?? '—' },
   ];
 
   return (
@@ -479,14 +487,20 @@ export function ProfesorMisAlumnos({ user, materias, alumnos, cursos }) {
    Alumno: Mis Materias
 ──────────────────────────────────────────────── */
 export function AlumnoMisMaterias({ user, alumnos, materias, profesores, compact = false }) {
-  const alumno = alumnos.find(a => a.email === user.email);
-  const myMaterias = materias.filter(m => m.cursoId === alumno?.cursoId);
+  const alumno = useMemo(() => alumnos.find(a => a.email === user.email), [alumnos, user.email]);
+  const myMaterias = useMemo(() => materias.filter(m => m.cursoId === alumno?.cursoId), [materias, alumno?.cursoId]);
 
   const [filter, setFilter] = useState({ profesorId: '' });
-  const profOpts = uniq(myMaterias.map(m => m.profesorId))
-    .map(id => profesores.find(p => p.id === id))
+
+  // ⚡ Bolt: O(1) Map Lookups for Related Entities
+  // Transforms an O(N) find operation to O(1) by creating a dictionary of professors.
+  // This reduces re-renders computation time, avoiding O(N x M) operations when rendering options and table rows.
+  const profById = useMemo(() => Object.fromEntries(profesores.map(p => [p.id, p])), [profesores]);
+
+  const profOpts = useMemo(() => uniq(myMaterias.map(m => m.profesorId))
+    .map(id => profById[id])
     .filter(Boolean)
-    .map(p => ({ value: p.id, label: `${p.nombre} ${p.apellido}` }));
+    .map(p => ({ value: p.id, label: `${p.nombre} ${p.apellido}` })), [myMaterias, profById]);
 
   const filters = [
     { key: 'profesorId', label: 'Profesor', options: profOpts },
@@ -500,7 +514,7 @@ export function AlumnoMisMaterias({ user, alumnos, materias, profesores, compact
     { key: 'creditos', label: 'Créditos' },
     {
       key: 'profesorId', label: 'Profesor',
-      render: r => { const p = profesores.find(x => x.id === r.profesorId); return p ? `${p.nombre} ${p.apellido}` : '—'; },
+      render: r => { const p = profById[r.profesorId]; return p ? `${p.nombre} ${p.apellido}` : '—'; },
     },
   ];
 
@@ -549,12 +563,17 @@ function buildSchedule(materias) {
 }
 
 export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
-  const alumno = alumnos?.find(a => a.email === user.email);
-  const seccion = cursos?.find(c => c.id === alumno?.cursoId);
+  const alumno = useMemo(() => alumnos?.find(a => a.email === user.email), [alumnos, user.email]);
+  const seccion = useMemo(() => cursos?.find(c => c.id === alumno?.cursoId), [cursos, alumno?.cursoId]);
   const myMaterias = useMemo(
     () => materias?.filter(m => m.cursoId === alumno?.cursoId) ?? [],
     [materias, alumno?.cursoId]
   );
+
+  // ⚡ Bolt: O(1) Map Lookups for Related Entities
+  // Avoids O(N x M) complexity during the schedule grid rendering loop by pre-computing
+  // a dictionary for O(1) lookups. Noticeable performance improvement on complex schedule views.
+  const profById = useMemo(() => Object.fromEntries((profesores || []).map(p => [p.id, p])), [profesores]);
 
   const [view, setView] = useState('semanal');
   const [diaFiltro, setDiaFiltro] = useState('');
@@ -626,7 +645,7 @@ export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
                               <div className="text-accent-light text-xs font-semibold truncate">{m.nombre}</div>
                               <div className="text-[10px] text-slate-500 truncate">{m.codigo}</div>
                               {profesores && (() => {
-                                const p = profesores.find(x => x.id === m.profesorId);
+                                const p = profById[m.profesorId];
                                 return p ? <div className="text-[10px] text-slate-400 mt-1 truncate">Prof. {p.apellido}</div> : null;
                               })()}
                             </div>
