@@ -1,8 +1,4 @@
-## 2025-05-17 - [Remove Hardcoded Passwords in Source]
-**Vulnerability:** The codebase had hardcoded plaintext credentials (`admin123`, etc.) in the demo users array in `src/data.js` and login demo features in `src/components/Auth.jsx`.
-**Learning:** Even in frontend mock applications, embedding static credentials is a bad practice that sets bad patterns and could leak test info if copied to production templates.
-**Prevention:** Remove static plaintext passwords; implement mock authentication based on DEV environment flags (`import.meta.env.DEV`), eliminating the need to store dummy strings directly.
-## 2024-05-18 - [Critical] Implement frontend password hashing
-**Vulnerability:** Passwords for demo users were stored in plaintext in the codebase and verified using plaintext comparison.
-**Learning:** In purely frontend applications that rely on mock credentials, it's still crucial to hash passwords. Using Web Crypto API (`crypto.subtle`) for SHA-256 hashing allows secure client-side password handling without needing external libraries. This change required converting synchronous login logic into asynchronous.
-**Prevention:** Avoid plaintext credentials anywhere in the code. When building demo or mock applications without a backend, utilize native browser Web Crypto API to hash passwords before storing or comparing them.
+## 2024-05-20 - [Safeguarding Mock Credentials from Production]
+**Vulnerability:** The application contained hardcoded mock credentials (including hashes that were easily crackable) loaded into the main authentication state unconditionally. In production, this allows any user to gain administrative access by guessing or cracking the mock credentials.
+**Learning:** Hardcoded credentials meant for development and testing should never be bundled into the production state. Even if the application lacks a real backend, shipping mock administrator credentials exposes the system.
+**Prevention:** Always conditionally load mock data using environment variables (e.g., `import.meta.env.DEV` in Vite) to ensure test credentials are not available in production builds.
