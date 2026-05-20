@@ -29,7 +29,7 @@ const uid = () => `id_${++nextId}`;
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState(DEMO_USERS);
+  const [users, setUsers] = useState(import.meta.env.DEV ? DEMO_USERS : []);
   const [alumnos, setAlumnos] = useState(INITIAL_ALUMNOS);
   const [profesores, setProfesores] = useState(INITIAL_PROFESORES);
   const [cursos, setCursos] = useState(INITIAL_CURSOS);
