@@ -13,14 +13,40 @@ export default function Auth({ onLogin }) {
   const [role, setRole] = useState('Administrador');
   const [error, setError] = useState('');
 
+  // Seguridad: Control de intentos fallidos para mitigar ataques de fuerza bruta
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      setError(`Demasiados intentos. Por favor espere ${remainingSeconds} segundos.`);
+      return;
+    } else if (lockoutUntil && Date.now() >= lockoutUntil) {
+      setLockoutUntil(null);
+      setFailedAttempts(0);
+    }
+
     if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
+
     const result = await onLogin(email, password, role);
     if (!result) {
-      setError('Credenciales incorrectas o rol no coincide.');
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+
+      if (newAttempts >= 5) {
+        setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
+        setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
+      } else {
+        setError('Credenciales incorrectas o rol no coincide.');
+      }
       setPassword(''); // Seguridad: limpiar input password en error
+    } else {
+      setFailedAttempts(0);
+      setLockoutUntil(null);
     }
   };
 
