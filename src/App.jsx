@@ -71,8 +71,14 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
-    setUser(prev => ({ ...prev, ...fields }));
-    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...fields } : u));
+    // SECURITY: Prevent Mass Assignment by explicitly extracting only permitted fields
+    const allowedFields = {};
+    if (fields.nombre !== undefined) allowedFields.nombre = fields.nombre;
+    if (fields.apellido !== undefined) allowedFields.apellido = fields.apellido;
+    if (fields.email !== undefined) allowedFields.email = fields.email;
+
+    setUser(prev => ({ ...prev, ...allowedFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...allowedFields } : u));
     // Sync con alumnos/profesores si corresponde
     if (user.role === 'Alumno') {
       setAlumnos(prev => prev.map(a => a.email === user.email
