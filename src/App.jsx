@@ -71,8 +71,14 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
-    setUser(prev => ({ ...prev, ...fields }));
-    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...fields } : u));
+    const { nombre, apellido, email } = fields;
+    const safeFields = {
+      ...(nombre !== undefined && { nombre }),
+      ...(apellido !== undefined && { apellido }),
+      ...(email !== undefined && { email })
+    };
+    setUser(prev => ({ ...prev, ...safeFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...safeFields } : u));
     // Sync con alumnos/profesores si corresponde
     if (user.role === 'Alumno') {
       setAlumnos(prev => prev.map(a => a.email === user.email
