@@ -397,12 +397,3 @@ export const INITIAL_ALUMNOS = [
   { id: 'a11', nombre: 'Paola',      apellido: 'Jiménez',   email: 'paola.j@sge.edu',      fechaNacimiento: '2001-05-03', cursoId: 'MKT-N3-A' },
   { id: 'a12', nombre: 'Carlos',     apellido: 'Delgado',   email: 'carlos.d@sge.edu',     fechaNacimiento: '1999-10-25', cursoId: 'MED-N6-B' },
 ];
-
-// ── Horario de referencia (alumno demo – Ingeniería 1er Nivel) ────────────────
-export const SCHEDULE = {
-  Lunes:     ['Cálculo Diferencial (07:00-09:00)', 'Álgebra Lineal (09:15-11:15)', 'Física I (11:30-13:00)'],
-  Martes:    ['Programación I (07:00-09:00)',      'Química General (09:15-11:15)', 'Cálculo Diferencial (11:30-13:00)'],
-  Miércoles: ['Álgebra Lineal (07:00-09:00)',      'Física I (09:15-11:15)',        'Programación I (11:30-13:00)'],
-  Jueves:    ['Química General (07:00-09:00)',     'Cálculo Diferencial (09:15-11:15)', 'Álgebra Lineal (11:30-13:00)'],
-  Viernes:   ['Física I (07:00-09:00)',            'Química General (09:15-11:15)', 'Programación I (11:30-13:00)'],
-};
