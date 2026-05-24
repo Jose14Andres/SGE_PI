@@ -71,17 +71,25 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
-    setUser(prev => ({ ...prev, ...fields }));
-    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...fields } : u));
+    // SECURITY: Prevenir mass assignment vulnerabilidad extrayendo solo campos permitidos
+    const { nombre, apellido, email } = fields;
+    const permittedFields = {
+      ...(nombre !== undefined && { nombre }),
+      ...(apellido !== undefined && { apellido }),
+      ...(email !== undefined && { email })
+    };
+
+    setUser(prev => ({ ...prev, ...permittedFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...permittedFields } : u));
     // Sync con alumnos/profesores si corresponde
     if (user.role === 'Alumno') {
       setAlumnos(prev => prev.map(a => a.email === user.email
-        ? { ...a, nombre: fields.nombre ?? a.nombre, apellido: fields.apellido ?? a.apellido, email: fields.email ?? a.email }
+        ? { ...a, ...permittedFields }
         : a));
     }
     if (user.role === 'Profesor') {
       setProfesores(prev => prev.map(p => p.email === user.email
-        ? { ...p, nombre: fields.nombre ?? p.nombre, apellido: fields.apellido ?? p.apellido, email: fields.email ?? p.email }
+        ? { ...p, ...permittedFields }
         : p));
     }
     addToast('Datos actualizados correctamente');
