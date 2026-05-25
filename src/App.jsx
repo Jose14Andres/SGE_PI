@@ -52,6 +52,11 @@ export default function App() {
   const removeToast = useCallback((id) => setToasts(prev => prev.filter(t => t.id !== id)), []);
 
   const handleLogin = useCallback(async (email, password, role) => {
+    if (typeof email !== 'string' || typeof password !== 'string' || typeof role !== 'string') return false;
+    if (email.length > 100 || password.length > 100 || password.length === 0) return false;
+    const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
+    if (!ROLES.includes(role)) return false;
+
     const hashedPassword = await hashPassword(password);
     const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
     if (!found) return false;
@@ -71,8 +76,20 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
-    setUser(prev => ({ ...prev, ...fields }));
-    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...fields } : u));
+    const permittedFields = {
+      nombre: fields.nombre,
+      apellido: fields.apellido,
+      email: fields.email
+    };
+
+    // Filter out undefined values to not overwrite existing values with undefined if they were not provided
+    const updatePayload = Object.fromEntries(
+      // eslint-disable-next-line no-unused-vars
+      Object.entries(permittedFields).filter(([_, v]) => v !== undefined)
+    );
+
+    setUser(prev => ({ ...prev, ...updatePayload }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...updatePayload } : u));
     // Sync con alumnos/profesores si corresponde
     if (user.role === 'Alumno') {
       setAlumnos(prev => prev.map(a => a.email === user.email
