@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
 
@@ -12,15 +12,58 @@ export default function Auth({ onLogin }) {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Administrador');
   const [error, setError] = useState('');
+  const [attempts, setAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState(null);
+
+  useEffect(() => {
+    if (lockoutUntil) {
+      const now = Date.now();
+      if (now < lockoutUntil) {
+        const timeout = setTimeout(() => {
+          setLockoutUntil(null);
+          setAttempts(0);
+          setError('');
+        }, lockoutUntil - now);
+        return () => clearTimeout(timeout);
+      } else {
+        setLockoutUntil(null);
+        setAttempts(0);
+      }
+    }
+  }, [lockoutUntil]);
+
+  const isLockedOut = lockoutUntil !== null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Security: Check if user is locked out due to too many failed attempts
+    if (isLockedOut) {
+      const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      setError(`Demasiados intentos. Intente nuevamente en ${remainingSeconds} segundos.`);
+      return;
+    }
+
     if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
+
     const result = await onLogin(email, password, role);
     if (!result) {
-      setError('Credenciales incorrectas o rol no coincide.');
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      if (newAttempts >= 5) {
+        setLockoutUntil(Date.now() + 30000); // Lockout for 30 seconds
+        setError('Demasiados intentos fallidos. Cuenta bloqueada por 30 segundos.');
+      } else {
+        setError(`Credenciales incorrectas o rol no coincide. Intentos restantes: ${5 - newAttempts}`);
+      }
+
       setPassword(''); // Seguridad: limpiar input password en error
+    } else {
+      // Reset on success
+      setAttempts(0);
+      setLockoutUntil(null);
     }
   };
 
@@ -101,9 +144,14 @@ export default function Auth({ onLogin }) {
             <button
               id="login-submit"
               type="submit"
-              className="w-full bg-accent hover:bg-accent-light active:bg-accent-dark transition-colors py-3 rounded-lg font-medium text-white shadow-lg shadow-accent/20 text-sm"
+              disabled={isLockedOut}
+              className={`w-full transition-colors py-3 rounded-lg font-medium text-white shadow-lg shadow-accent/20 text-sm ${
+                isLockedOut
+                  ? 'bg-gray-600 cursor-not-allowed opacity-70'
+                  : 'bg-accent hover:bg-accent-light active:bg-accent-dark'
+              }`}
             >
-              Iniciar Sesión
+              {isLockedOut ? 'Bloqueado' : 'Iniciar Sesión'}
             </button>
           </form>
 
