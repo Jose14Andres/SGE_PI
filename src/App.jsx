@@ -29,7 +29,7 @@ const uid = () => `id_${++nextId}`;
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState(import.meta.env.DEV ? DEMO_USERS : []);
+  const [users, setUsers] = useState(DEMO_USERS);
   const [alumnos, setAlumnos] = useState(INITIAL_ALUMNOS);
   const [profesores, setProfesores] = useState(INITIAL_PROFESORES);
   const [cursos, setCursos] = useState(INITIAL_CURSOS);
@@ -52,8 +52,14 @@ export default function App() {
   const removeToast = useCallback((id) => setToasts(prev => prev.filter(t => t.id !== id)), []);
 
   const handleLogin = useCallback(async (email, password, role) => {
-    const hashedPassword = await hashPassword(password);
-    const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
+    let found;
+    if (import.meta.env.DEV) {
+      // En modo DEV, los usuarios de prueba no tienen contraseña
+      found = users.find(u => u.email === email && u.role === role);
+    } else {
+      const hashedPassword = await hashPassword(password);
+      found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
+    }
     if (!found) return false;
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
