@@ -1,5 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { secureRandom } from '../../utils/crypto';
 
 const SHAPES = [
   { pos: [-4.5,  2.5, -8],  geo: 'icosa', color: '#6366f1', speed: 0.18, scale: 1.4 },
@@ -35,9 +36,9 @@ function Particles() {
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      arr[i * 3]     = (Math.random() - 0.5) * 26;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 18;
-      arr[i * 3 + 2] = -4 - Math.random() * 14;
+      arr[i * 3]     = (secureRandom() - 0.5) * 26;
+      arr[i * 3 + 1] = (secureRandom() - 0.5) * 18;
+      arr[i * 3 + 2] = -4 - secureRandom() * 14;
     }
     return arr;
   }, []);
