@@ -16,7 +16,7 @@ export default function Auth({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
+    if (!email || (!password && !import.meta.env.DEV)) { setError('Por favor complete todos los campos.'); return; }
     const result = await onLogin(email, password, role);
     if (!result) {
       setError('Credenciales incorrectas o rol no coincide.');
@@ -33,7 +33,7 @@ export default function Auth({ onLogin }) {
     { label: 'Alumno', email: 'alumno@sge.edu', role: 'Alumno' },
   ];
 
-  const fillDemo = (d) => { setEmail(d.email); setPassword('mock_password'); setRole(d.role); setError(''); };
+  const fillDemo = (d) => { setEmail(d.email); setPassword(''); setRole(d.role); setError(''); };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 animate-fade-in">

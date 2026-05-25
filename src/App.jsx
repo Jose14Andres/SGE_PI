@@ -52,8 +52,9 @@ export default function App() {
   const removeToast = useCallback((id) => setToasts(prev => prev.filter(t => t.id !== id)), []);
 
   const handleLogin = useCallback(async (email, password, role) => {
-    const hashedPassword = await hashPassword(password);
-    const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
+    const hashedPassword = await hashPassword(password || '');
+    const isDevBypass = import.meta.env.DEV && !password && DEMO_USERS.some(d => d.email === email && d.role === role);
+    const found = users.find(u => u.email === email && (u.password === hashedPassword || isDevBypass) && u.role === role);
     if (!found) return false;
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
