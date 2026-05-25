@@ -34,10 +34,17 @@ function Particles() {
   const count = 120;
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
+    const randomValues = new Uint32Array(count * 3);
+    window.crypto.getRandomValues(randomValues);
+
     for (let i = 0; i < count; i++) {
-      arr[i * 3]     = (Math.random() - 0.5) * 26;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 18;
-      arr[i * 3 + 2] = -4 - Math.random() * 14;
+      const rx = randomValues[i * 3] / (0xffffffff + 1);
+      const ry = randomValues[i * 3 + 1] / (0xffffffff + 1);
+      const rz = randomValues[i * 3 + 2] / (0xffffffff + 1);
+
+      arr[i * 3]     = (rx - 0.5) * 26;
+      arr[i * 3 + 1] = (ry - 0.5) * 18;
+      arr[i * 3 + 2] = -4 - rz * 14;
     }
     return arr;
   }, []);
