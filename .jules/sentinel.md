@@ -3,6 +3,10 @@
 **Learning:** Hardcoded credentials meant for development and testing should never be bundled into the production state. Even if the application lacks a real backend, shipping mock administrator credentials exposes the system.
 **Prevention:** Always conditionally load mock data using environment variables (e.g., `import.meta.env.DEV` in Vite) to ensure test credentials are not available in production builds.
 
+## 2024-05-24 - [Preventing Mass Assignment in Frontend State]
+**Vulnerability:** The application used an unbounded spread operator (`{ ...prev, ...fields }`) to update the mocked database entities (like user profiles) in the frontend state based on user input. This allowed a malicious user to craft a payload that overwrote sensitive fields, such as escalating their `role` from 'Alumno' to 'Administrador'.
+**Learning:** Mass assignment vulnerabilities are not exclusively a backend concern. When managing a mocked backend entirely in frontend state, the frontend acts as the data layer and is susceptible to the same injection attacks if input is blindly spread into the state object.
+**Prevention:** Always explicitly extract, filter, and validate permitted fields from user input before applying them to the state (e.g., `const { nombre, apellido, email } = fields`), rather than blindly trusting and spreading the entire input object.
 ## 2026-05-25 - [Preventing Mass Assignment in State Updates]
 **Vulnerability:** A profile update function used `{ ...prev, ...fields }` to merge user-provided updates directly into the global user state. This could allow an attacker to alter protected attributes, such as injecting `role: 'Administrador'` to elevate their own privileges.
 **Learning:** Even in purely frontend or mocked applications, bounding and explicitly extracting user inputs before merging them into sensitive state objects is critical to prevent state-based privilege escalation.
