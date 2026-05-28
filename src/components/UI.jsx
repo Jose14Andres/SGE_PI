@@ -363,6 +363,13 @@ export const StatCard = React.memo(function StatCard({ label, value, icon, color
 
 /* ─── Skeleton Row ──────────────────────────────── */
 export function SkeletonTable({ rows = 5, cols = 4 }) {
+  const widths = useMemo(() => {
+    const totalCells = rows * cols;
+    const randomValues = new Uint32Array(totalCells);
+    window.crypto.getRandomValues(randomValues);
+    return Array.from(randomValues).map(val => 60 + (val / (0xffffffff + 1)) * 40);
+  }, [rows, cols]);
+
   return (
     <div className="overflow-x-auto rounded-xl border border-white/10 animate-pulse">
       <table className="w-full">
@@ -379,6 +386,12 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
               {Array.from({ length: cols }).map((_, c) => (
                 <td key={c} className="px-4 py-3"><div className="h-3 bg-white/5 rounded" style={{ width: `${60 + ((r * 17 + c * 23) % 41)}%` }} /></td>
               ))}
+              {Array.from({ length: cols }).map((_, c) => {
+                const cellIndex = r * cols + c;
+                return (
+                  <td key={c} className="px-4 py-3"><div className="h-3 bg-white/5 rounded" style={{ width: `${widths[cellIndex]}%` }} /></td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
