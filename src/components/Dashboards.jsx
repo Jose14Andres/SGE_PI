@@ -208,6 +208,10 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
     const cursoIdsSet = new Set(misMaterias.map(m => m.cursoId));
     return alumnos.filter(a => cursoIdsSet.has(a.cursoId));
   }, [alumnos, misMaterias]);
+  // ⚡ Performance Optimization: Memoized O(N) filters and mappings to prevent expensive recalculations on every render (e.g. when switching tabs).
+  const misMaterias = useMemo(() => materias.filter(m => m.profesorId === user.profesorId), [materias, user.profesorId]);
+  const misCursoIds = useMemo(() => [...new Set(misMaterias.map(m => m.cursoId))], [misMaterias]);
+  const todosMisAlumnos = useMemo(() => alumnos.filter(a => misCursoIds.includes(a.cursoId)), [alumnos, misCursoIds]);
 
   const [activeTab, setActiveTab] = useState('calificaciones');
   const [selectedMateria, setSelectedMateria] = useState(misMaterias[0]?.id || '');
@@ -219,6 +223,10 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   const alumnosDelCurso = useMemo(() => (
     materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos
   ), [alumnos, materiaElegida, todosMisAlumnos]);
+  const materiaElegida = useMemo(() => misMaterias.find(m => m.id === selectedMateria), [misMaterias, selectedMateria]);
+  const alumnosDelCurso = useMemo(() =>
+    materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos,
+  [materiaElegida, alumnos, todosMisAlumnos]);
 
   const tabs = [
     { id: 'horarios', label: 'Mis Horarios', icon: '📅' },
@@ -309,9 +317,10 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
    Alumno Dashboard (con tabs: Perfil / Materias / Horario)
 ──────────────────────────────────────────────── */
 export function AlumnoDashboard({ user, alumnos, cursos, materias }) {
-  const alumno = alumnos.find(a => a.email === user.email);
-  const seccion = cursos.find(c => c.id === alumno?.cursoId);
-  const myMaterias = materias.filter(m => m.cursoId === alumno?.cursoId);
+  // ⚡ Bolt: Optimize O(N) entity lookups in render
+  const alumno = useMemo(() => alumnos.find(a => a.email === user.email), [alumnos, user.email]);
+  const seccion = useMemo(() => cursos.find(c => c.id === alumno?.cursoId), [cursos, alumno?.cursoId]);
+  const myMaterias = useMemo(() => materias.filter(m => m.cursoId === alumno?.cursoId), [materias, alumno?.cursoId]);
 
   // Datos mockeados para rendimiento
   const rendimientoData = [
