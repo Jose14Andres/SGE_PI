@@ -87,6 +87,14 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
+    // SECURITY: Prevent Mass Assignment by explicitly extracting only permitted fields
+    const allowedFields = {};
+    if (fields.nombre !== undefined) allowedFields.nombre = fields.nombre;
+    if (fields.apellido !== undefined) allowedFields.apellido = fields.apellido;
+    if (fields.email !== undefined) allowedFields.email = fields.email;
+
+    setUser(prev => ({ ...prev, ...allowedFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...allowedFields } : u));
     const { nombre, apellido, email } = fields;
     const safeFields = {
     // SECURITY: Prevenir mass assignment vulnerabilidad extrayendo solo campos permitidos
