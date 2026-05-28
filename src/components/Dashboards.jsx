@@ -28,6 +28,8 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
     // ⚡ Bolt: O(1) Map Lookups for Related Entities
     const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     const arr = [];
+    // ⚡ Bolt: O(1) Map Lookups for Related Entities
+    const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     alumnos.forEach(a => {
       const c = cursosById[a.cursoId];
       arr.push({ ...a, rol: 'Alumno', carrera: c?.carrera || '—', nivel: c?.nivel || '—' });
