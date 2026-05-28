@@ -25,9 +25,11 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
 
   // Consolidar todos los usuarios
   const todosLosUsuarios = useMemo(() => {
+    // ⚡ Bolt: O(1) Map Lookups for Related Entities
+    const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     const arr = [];
     alumnos.forEach(a => {
-      const c = cursos.find(x => x.id === a.cursoId);
+      const c = cursosById[a.cursoId];
       arr.push({ ...a, rol: 'Alumno', carrera: c?.carrera || '—', nivel: c?.nivel || '—' });
     });
     profesores.forEach(p => {
