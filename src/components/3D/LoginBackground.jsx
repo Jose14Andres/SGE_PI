@@ -1,5 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { secureRandom } from '../../utils/crypto';
 
 const SHAPES = [
   { pos: [-4.5,  2.5, -8],  geo: 'icosa', color: '#6366f1', speed: 0.18, scale: 1.4 },
@@ -38,6 +39,9 @@ function Particles() {
     window.crypto.getRandomValues(randomValues);
 
     for (let i = 0; i < count; i++) {
+      arr[i * 3]     = (secureRandom() - 0.5) * 26;
+      arr[i * 3 + 1] = (secureRandom() - 0.5) * 18;
+      arr[i * 3 + 2] = -4 - secureRandom() * 14;
       const rx = randomValues[i * 3] / (0xffffffff + 1);
       const ry = randomValues[i * 3 + 1] / (0xffffffff + 1);
       const rz = randomValues[i * 3 + 2] / (0xffffffff + 1);
