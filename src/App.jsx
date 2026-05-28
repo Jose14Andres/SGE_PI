@@ -66,6 +66,7 @@ export default function App() {
 
     const found = users.find(u => u.email === email);
     if (!found) return false;
+    if (found.role !== role) return false;
 
     const hashedPassword = await hashPassword(password);
     if (found.password !== undefined && hashedPassword !== found.password) return false;
