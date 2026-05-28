@@ -5,3 +5,6 @@
 ## 2024-06-25 - [Memoizing Static Prop Calculations in Dashboards]
 **Learning:** Top-level components like Dashboards often recalculate large subsets of data (like filtering students by assigned courses) on every render (e.g., when switching active tabs) even when the source data and criteria haven't changed.
 **Action:** Always wrap `Array.filter` and `Array.map` operations derived solely from static props and context users into `useMemo` hooks to avoid expensive O(N) recalculations on simple local state updates (like tab switching).
+* **N+1 Render Iterations**: Avoid filtering large datasets inside `map` render blocks (e.g. `alumnos.filter(...)`). Pre-calculate the metrics into dictionaries using `useMemo` and `reduce` outside the render loop for an O(n) improvement.
+## Memoization of Filter Operations
+To prevent O(N) rendering bottlenecks in React components like dashboards, avoid evaluating unmemoized array operations (`.filter()`, `.find()`, `.map()`) directly in the render body. Wrap derived arrays and looked-up items using `useMemo` hooks with tight dependency arrays, ensuring that calculations only occur when necessary (e.g. data or selections change).
