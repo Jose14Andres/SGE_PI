@@ -383,6 +383,9 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
         <tbody className="divide-y divide-white/5">
           {Array.from({ length: rows }).map((_, r) => (
             <tr key={r}>
+              {Array.from({ length: cols }).map((_, c) => (
+                <td key={c} className="px-4 py-3"><div className="h-3 bg-white/5 rounded" style={{ width: `${60 + ((r * 17 + c * 23) % 41)}%` }} /></td>
+              ))}
               {Array.from({ length: cols }).map((_, c) => {
                 const cellIndex = r * cols + c;
                 return (
