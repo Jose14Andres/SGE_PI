@@ -300,9 +300,10 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
    Alumno Dashboard (con tabs: Perfil / Materias / Horario)
 ──────────────────────────────────────────────── */
 export function AlumnoDashboard({ user, alumnos, cursos, materias }) {
-  const alumno = alumnos.find(a => a.email === user.email);
-  const seccion = cursos.find(c => c.id === alumno?.cursoId);
-  const myMaterias = materias.filter(m => m.cursoId === alumno?.cursoId);
+  // ⚡ Bolt: Optimize O(N) entity lookups in render
+  const alumno = useMemo(() => alumnos.find(a => a.email === user.email), [alumnos, user.email]);
+  const seccion = useMemo(() => cursos.find(c => c.id === alumno?.cursoId), [cursos, alumno?.cursoId]);
+  const myMaterias = useMemo(() => materias.filter(m => m.cursoId === alumno?.cursoId), [materias, alumno?.cursoId]);
 
   // Datos mockeados para rendimiento
   const rendimientoData = [
