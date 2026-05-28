@@ -19,9 +19,6 @@ export function usePerformance(componentName) {
 
   useEffect(() => {
     renderCount.current++;
-    if (import.meta.env.DEV && renderCount.current > 2) {
-      console.warn(`🔄 [Perf Warning] ${componentName} re-renderizado excesivo: ${renderCount.current} veces.`);
-    }
   });
 
   return renderCount.current;

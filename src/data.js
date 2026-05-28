@@ -1,9 +1,9 @@
-export const DEMO_USERS = [
-  { id: 'u1', email: 'admin@sge.edu', password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
-  { id: 'u2', email: 'secretaria@sge.edu', password: 'ee63c6506c68d4613b9553820393f22db66a1dbc9ba6dc5640df9fce741e6258', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
-  { id: 'u3', email: 'profesor@sge.edu', password: '00624b02e1f9b996a3278f559d5d55313552ad2c0bafc82adfd975c12df61eaf', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
-  { id: 'u4', email: 'alumno@sge.edu', password: 'c1042ecc51482cef39f2e89e1273a35074db7f873f1ac6050efd546a9bceefc0', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
-];
+export const DEMO_USERS = import.meta.env.DEV ? [
+  { id: 'u1', email: 'admin@sge.edu', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
+  { id: 'u2', email: 'secretaria@sge.edu', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
+  { id: 'u3', email: 'profesor@sge.edu', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
+  { id: 'u4', email: 'alumno@sge.edu', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
+] : [];
 
 // ── Helpers internos ─────────────────────────────────────────────────────────
 const NIVEL_LABELS = ['1er','2do','3er','4to','5to','6to','7mo','8vo','9no','10mo','11vo','12vo'];
@@ -397,12 +397,3 @@ export const INITIAL_ALUMNOS = [
   { id: 'a11', nombre: 'Paola',      apellido: 'Jiménez',   email: 'paola.j@sge.edu',      fechaNacimiento: '2001-05-03', cursoId: 'MKT-N3-A' },
   { id: 'a12', nombre: 'Carlos',     apellido: 'Delgado',   email: 'carlos.d@sge.edu',     fechaNacimiento: '1999-10-25', cursoId: 'MED-N6-B' },
 ];
-
-// ── Horario de referencia (alumno demo – Ingeniería 1er Nivel) ────────────────
-export const SCHEDULE = {
-  Lunes:     ['Cálculo Diferencial (07:00-09:00)', 'Álgebra Lineal (09:15-11:15)', 'Física I (11:30-13:00)'],
-  Martes:    ['Programación I (07:00-09:00)',      'Química General (09:15-11:15)', 'Cálculo Diferencial (11:30-13:00)'],
-  Miércoles: ['Álgebra Lineal (07:00-09:00)',      'Física I (09:15-11:15)',        'Programación I (11:30-13:00)'],
-  Jueves:    ['Química General (07:00-09:00)',     'Cálculo Diferencial (09:15-11:15)', 'Álgebra Lineal (11:30-13:00)'],
-  Viernes:   ['Física I (07:00-09:00)',            'Química General (09:15-11:15)', 'Programación I (11:30-13:00)'],
-};
