@@ -1,5 +1,5 @@
 import { useMemo, useState, lazy, Suspense } from 'react';
-import { StatCard, DataTable, FilterBar, BarChart, Tabs, Select, Collapsible } from './UI.jsx';
+import { StatCard, DataTable, FilterBar, Tabs, Select, Collapsible } from './UI.jsx';
 
 const BarChart3D = lazy(() => import('./3D/BarChart3D.jsx'));
 
