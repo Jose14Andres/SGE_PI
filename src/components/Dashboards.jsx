@@ -153,6 +153,17 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
   const alumnosFilt = alumnos.filter(a => cursosIds.has(a.cursoId));
   const materiasFilt = materias.filter(m => cursosIds.has(m.cursoId));
 
+  // ⚡ Bolt: O(n) pre-calculation of counts to avoid N+1 filters during render
+  const alumnosByCurso = useMemo(() => alumnos.reduce((acc, a) => {
+    acc[a.cursoId] = (acc[a.cursoId] || 0) + 1;
+    return acc;
+  }, {}), [alumnos]);
+
+  const materiasByCurso = useMemo(() => materias.reduce((acc, m) => {
+    acc[m.cursoId] = (acc[m.cursoId] || 0) + 1;
+    return acc;
+  }, {}), [materias]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -177,8 +188,8 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
       <Collapsible title="Secciones visibles" icon="📚">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[360px] overflow-y-auto pr-1">
           {coursesFilt.slice(0, 30).map(c => {
-            const count = alumnos.filter(a => a.cursoId === c.id).length;
-            const mats  = materias.filter(m => m.cursoId === c.id).length;
+            const count = alumnosByCurso[c.id] || 0;
+            const mats  = materiasByCurso[c.id] || 0;
             return (
               <div key={c.id} className="bg-navy-900/40 border border-white/5 rounded-xl p-3 hover:border-white/10 transition-all">
                 <div className="text-sm text-white font-medium">{c.carrera}</div>
