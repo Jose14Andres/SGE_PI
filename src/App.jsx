@@ -87,6 +87,14 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
+    // 🛡️ Sentinel: Prevent mass assignment vulnerability by extracting only allowed fields
+    const safeFields = {};
+    if (fields.nombre !== undefined) safeFields.nombre = fields.nombre;
+    if (fields.apellido !== undefined) safeFields.apellido = fields.apellido;
+    if (fields.email !== undefined) safeFields.email = fields.email;
+
+    setUser(prev => ({ ...prev, ...safeFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...safeFields } : u));
     const permittedFields = {
       nombre: fields.nombre,
       apellido: fields.apellido,
