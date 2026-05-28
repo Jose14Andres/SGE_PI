@@ -212,6 +212,14 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
    Profesor Dashboard (con dropdown de curso)
 ──────────────────────────────────────────────── */
 export function ProfesorDashboard({ user, materias, alumnos }) {
+  // ⚡ Performance optimization: Memoize O(N) lookup for static prop references.
+  // Helps prevent expensive recalculation on every render (e.g. tab changes).
+  const { misMaterias, todosMisAlumnos } = useMemo(() => {
+    const mMaterias = materias.filter(m => m.profesorId === user.profesorId);
+    const misCursoIds = [...new Set(mMaterias.map(m => m.cursoId))];
+    const todosAlumnos = alumnos.filter(a => misCursoIds.includes(a.cursoId));
+    return { misMaterias: mMaterias, todosMisAlumnos: todosAlumnos };
+  }, [materias, alumnos, user.profesorId]);
   // Optimization: Memoize to avoid O(N*M) filters and re-evaluations on every render.
   const misMaterias = useMemo(() => materias.filter(m => m.profesorId === user.profesorId), [materias, user.profesorId]);
 
@@ -227,6 +235,12 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   const [activeTab, setActiveTab] = useState('calificaciones');
   const [selectedMateria, setSelectedMateria] = useState(misMaterias[0]?.id || '');
 
+  // ⚡ Performance optimization: Memoize derived state from selected materia.
+  const { materiaElegida, alumnosDelCurso } = useMemo(() => {
+    const materia = misMaterias.find(m => m.id === selectedMateria);
+    const delCurso = materia ? alumnos.filter(a => a.cursoId === materia.cursoId) : todosMisAlumnos;
+    return { materiaElegida: materia, alumnosDelCurso: delCurso };
+  }, [misMaterias, selectedMateria, alumnos, todosMisAlumnos]);
   // Optimization: O(1) map lookup instead of multiple .find() calls
   const materiasById = useMemo(() => Object.fromEntries(misMaterias.map(m => [m.id, m])), [misMaterias]);
   const materiaElegida = materiasById[selectedMateria];
