@@ -3,6 +3,10 @@
 **Learning:** Hardcoded credentials meant for development and testing should never be bundled into the production state. Even if the application lacks a real backend, shipping mock administrator credentials exposes the system.
 **Prevention:** Always conditionally load mock data using environment variables (e.g., `import.meta.env.DEV` in Vite) to ensure test credentials are not available in production builds.
 
+## 2024-05-21 - [Missing Rate Limiting on Login]
+**Vulnerability:** The login endpoint in `src/components/Auth.jsx` did not have any mechanism to restrict the number of failed login attempts, enabling brute-force and credential-stuffing attacks.
+**Learning:** Even in pure frontend applications, basic defense-in-depth measures like rate limiting login attempts on the client side add a layer of friction against automated attacks, though server-side enforcement remains essential for true security.
+**Prevention:** Implement account lockout mechanisms (e.g., locking out after a certain number of failed attempts) on sensitive endpoints to mitigate brute-force attacks.
 ## 2024-05-20 - [Prevent Mass Assignment in State Updates]
 **Vulnerability:** The application was vulnerable to Mass Assignment in the `handleUpdateProfile` function, where arbitrary fields from user input were blindly spread into the application state object representing the user. This allowed users to potentially modify read-only properties like `id`, `role`, or `password` by sending extra fields in the update payload.
 **Learning:** Blindly spreading user input into sensitive state objects (`{ ...prev, ...fields }`) bypasses intended access controls and opens the door for mass assignment vulnerabilities, even on the frontend.
