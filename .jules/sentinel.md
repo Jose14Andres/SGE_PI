@@ -29,3 +29,8 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** The `handleLogin` function in the client-side mock backend omitted input validation (type, length, valid options) before processing inputs, leaving the application vulnerable to DoS attacks via extremely large payload hashing or unexpected behavior from incorrect types.
 **Learning:** Always validate input lengths, types, and domains for both authentication boundaries and internal states, even if it is a simulated frontend mock.
 **Prevention:** Incorporate boundary checks and explicit type checking for variables handling authentication inputs before any operations like hashing or database lookups.
+
+## 2026-05-29 - [Preventing Role-Based Access Control (RBAC) Bypass in Frontend Auth]
+**Vulnerability:** The client-side `handleLogin` function did not verify that the role requested by the user during login actually matched the user's provisioned role stored in the system state. This allowed an attacker to log in to another role (e.g., an 'Alumno' requesting the 'Administrador' role) and gain unauthorized privileges within the UI because the frontend application incorrectly trusted the requested role instead of the stored role.
+**Learning:** Even when authentication is mocked on the frontend, enforcing strict role validation is critical. Trusting user-provided input over stored system state for authorization claims bypasses RBAC entirely and leads to privilege escalation.
+**Prevention:** Always validate that the requested role (or any requested authorization scope) explicitly matches the authoritative role stored for the authenticated user before granting access and establishing the user session (`if (found.role !== requestedRole) return false;`).

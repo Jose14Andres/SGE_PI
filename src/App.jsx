@@ -67,6 +67,9 @@ export default function App() {
     const found = users.find(u => u.email === email);
     if (!found) return false;
 
+    // SECURITY: Prevent RBAC Bypass - Ensure requested role matches stored user role
+    if (found.role !== role) return false;
+
     const hashedPassword = await hashPassword(password);
     if (found.password !== undefined && hashedPassword !== found.password) return false;
 
