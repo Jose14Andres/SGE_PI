@@ -29,3 +29,8 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** The `handleLogin` function in the client-side mock backend omitted input validation (type, length, valid options) before processing inputs, leaving the application vulnerable to DoS attacks via extremely large payload hashing or unexpected behavior from incorrect types.
 **Learning:** Always validate input lengths, types, and domains for both authentication boundaries and internal states, even if it is a simulated frontend mock.
 **Prevention:** Incorporate boundary checks and explicit type checking for variables handling authentication inputs before any operations like hashing or database lookups.
+
+## 2024-05-26 - [Missing File Size Limits on Client-Side File Processing]
+**Vulnerability:** The avatar image upload component in `src/components/Profile.jsx` did not enforce any size limit before reading the file into memory via `FileReader.readAsDataURL()`. An attacker could exploit this to freeze or crash the browser by uploading excessively large files (Client-Side DoS).
+**Learning:** Client-side processing of untrusted files requires the same defensive checks as server-side processing to protect against memory exhaustion.
+**Prevention:** Always validate file size and type *before* initiating expensive operations like `FileReader` conversions.
