@@ -65,7 +65,7 @@ export default function App() {
     if (!ROLES.includes(role)) return false;
 
     const found = users.find(u => u.email === email);
-    if (!found) return false;
+    if (!found || found.role !== role) return false;
 
     if (found.role !== role) return false;
 
@@ -75,6 +75,7 @@ export default function App() {
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
     setUser({ ...found, role: found.role, profesorId: prof?.id ?? null });
+    setUser({ ...found, profesorId: prof?.id ?? null });
     setCurrentView('dashboard');
     return true;
   }, [users, profesores]);

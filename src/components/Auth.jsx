@@ -38,6 +38,7 @@ export default function Auth({ onLogin }) {
 
   const isLockedOut = lockoutUntil !== null;
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -61,6 +62,21 @@ export default function Auth({ onLogin }) {
 
     if (email.length > 100 || password.length > 100) { setError('Entrada demasiado larga.'); return; }
 
+    // Security: Check if user is locked out due to too many failed attempts
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      setError(`Demasiados intentos. Intente nuevamente en ${remainingSeconds} segundos.`);
+      return;
+    } else if (lockoutUntil && Date.now() >= lockoutUntil) {
+      setLockoutUntil(null);
+      setAttempts(0);
+    }
+
+    if (!email || (!password && !import.meta.env.DEV)) {
+      setError('Por favor complete todos los campos.');
+      return;
+    }
+
     const result = await onLogin(email, password, role);
     if (!result) {
       const newAttempts = attempts + 1;
@@ -68,11 +84,11 @@ export default function Auth({ onLogin }) {
 
       if (newAttempts >= 5) {
         setLockoutUntil(Date.now() + 30000); // Lockout for 30 seconds
+        setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
         setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
       } else {
         setError('Credenciales incorrectas o rol no coincide.');
       }
-
       setPassword(''); // Seguridad: limpiar input password en error
     } else {
       // Reset on success

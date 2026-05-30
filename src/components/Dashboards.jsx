@@ -26,8 +26,6 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
   // Consolidar todos los usuarios
   const todosLosUsuarios = useMemo(() => {
     const arr = [];
-    // ⚡ Bolt: O(1) Map Lookups for Related Entities
-    const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     alumnos.forEach(a => {
       const c = cursosById[a.cursoId];
       arr.push({ ...a, rol: 'Alumno', carrera: c?.carrera || '—', nivel: c?.nivel || '—' });
@@ -233,6 +231,12 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   const alumnosDelCurso = useMemo(() => (
     materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos
   ), [alumnos, materiaElegida, todosMisAlumnos]);
+  // ⚡ Performance optimization: Memoize derived state from selected materia.
+  const { materiaElegida, alumnosDelCurso } = useMemo(() => {
+    const materia = misMaterias.find(m => m.id === selectedMateria);
+    const delCurso = materia ? alumnos.filter(a => a.cursoId === materia.cursoId) : todosMisAlumnos;
+    return { materiaElegida: materia, alumnosDelCurso: delCurso };
+  }, [misMaterias, selectedMateria, alumnos, todosMisAlumnos]);
 
   const tabs = [
     { id: 'horarios', label: 'Mis Horarios', icon: '📅' },
