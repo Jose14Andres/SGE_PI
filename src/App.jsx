@@ -65,14 +65,14 @@ export default function App() {
     if (!ROLES.includes(role)) return false;
 
     const found = users.find(u => u.email === email);
-    if (!found) return false;
+    if (!found || found.role !== role) return false;
 
     const hashedPassword = await hashPassword(password);
     if (found.password !== undefined && hashedPassword !== found.password) return false;
 
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
-    setUser({ ...found, role, profesorId: prof?.id ?? null });
+    setUser({ ...found, profesorId: prof?.id ?? null });
     setCurrentView('dashboard');
     return true;
   }, [users, profesores]);
