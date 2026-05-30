@@ -26,62 +26,51 @@ export default function Auth({ onLogin }) {
         }, lockoutUntil - now);
         return () => clearTimeout(timeout);
       } else {
-        setLockoutUntil(null);
-        setAttempts(0);
+        // Schedule state updates asynchronously to avoid cascading renders
+        const immediate = setTimeout(() => {
+          setLockoutUntil(null);
+          setAttempts(0);
+        }, 0);
+        return () => clearTimeout(immediate);
       }
     }
   }, [lockoutUntil]);
 
   const isLockedOut = lockoutUntil !== null;
 
-  // Seguridad: Control de intentos fallidos para mitigar ataques de fuerza bruta
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const [lockoutUntil, setLockoutUntil] = useState(null);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (lockoutUntil && Date.now() < lockoutUntil) {
-      const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
-      setError(`Demasiados intentos. Por favor espere ${remainingSeconds} segundos.`);
-      return;
-    } else if (lockoutUntil && Date.now() >= lockoutUntil) {
+    // Check if the lockout time has expired before checking isLockedOut
+    let actuallyLockedOut = isLockedOut;
+    if (lockoutUntil !== null && Date.now() >= lockoutUntil) {
       setLockoutUntil(null);
-      setFailedAttempts(0);
-    if (!email || (!password && !import.meta.env.DEV)) { setError('Por favor complete todos los campos.'); return; }
+      setAttempts(0);
+      actuallyLockedOut = false;
+    }
 
     // Security: Check if user is locked out due to too many failed attempts
-    if (isLockedOut) {
+    if (actuallyLockedOut) {
       const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
       setError(`Demasiados intentos. Intente nuevamente en ${remainingSeconds} segundos.`);
       return;
     }
 
-    if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
+    if (!email || (!password && !import.meta.env.DEV)) { setError('Por favor complete todos los campos.'); return; }
+
+    if (email.length > 100 || password.length > 100) { setError('Entrada demasiado larga.'); return; }
 
     const result = await onLogin(email, password, role);
     if (!result) {
-      const newAttempts = failedAttempts + 1;
-      setFailedAttempts(newAttempts);
-
-      if (newAttempts >= 5) {
-        setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
-        setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
-      } else {
-        setError('Credenciales incorrectas o rol no coincide.');
-      }
-      setPassword(''); // Seguridad: limpiar input password en error
-    } else {
-      setFailedAttempts(0);
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
 
       if (newAttempts >= 5) {
         setLockoutUntil(Date.now() + 30000); // Lockout for 30 seconds
-        setError('Demasiados intentos fallidos. Cuenta bloqueada por 30 segundos.');
+        setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
       } else {
-        setError(`Credenciales incorrectas o rol no coincide. Intentos restantes: ${5 - newAttempts}`);
+        setError('Credenciales incorrectas o rol no coincide.');
       }
 
       setPassword(''); // Seguridad: limpiar input password en error
