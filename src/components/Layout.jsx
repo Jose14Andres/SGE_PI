@@ -30,10 +30,14 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
   if (needsUpdate) {
     setOpenGroups(prev => {
       const next = { ...prev };
+      let changed = false;
       groups.forEach(g => {
-        if (g.items.some(i => i.id === currentView)) next[g.group] = true;
+        if (g.items.some(i => i.id === currentView) && !next[g.group]) {
+          next[g.group] = true;
+          changed = true;
+        }
       });
-      return next;
+      return changed ? next : prev;
     });
   }
 

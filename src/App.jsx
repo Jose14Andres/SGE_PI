@@ -29,7 +29,13 @@ const uid = () => `id_${++nextId}`;
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState(DEMO_USERS);
+  const TEST_USERS = [
+    { id: 'u1', email: 'admin@sge.edu', password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', role: 'Administrador', nombre: 'Carlos', apellido: 'Mendoza', avatar: null },
+    { id: 'u2', email: 'secretaria@sge.edu', password: 'b78847eb7959618ed22e43389ff68944a55a6a26893f9c74be4e7216bab6f4d5', role: 'Secretaria', nombre: 'María', apellido: 'Paredes', avatar: null },
+    { id: 'u3', email: 'profesor@sge.edu', password: 'cffa965d9faa1d453f2d336294b029a7f84f485f75ce2a2c723065453b12b03b', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
+    { id: 'u4', email: 'alumno@sge.edu', password: 'c1042ecc51482cef39f2e89e1273a35074db7f873f1ac6050efd546a9bceefc0', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
+  ];
+  const [users, setUsers] = useState(DEMO_USERS.length > 0 ? DEMO_USERS : TEST_USERS);
   const [alumnos, setAlumnos] = useState(INITIAL_ALUMNOS);
   const [profesores, setProfesores] = useState(INITIAL_PROFESORES);
   const [cursos, setCursos] = useState(INITIAL_CURSOS);
@@ -67,8 +73,21 @@ export default function App() {
     }
 
     if (!found) return false;
+
+    const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
+    if (!ROLES.includes(role)) return false;
+
+    const found = users.find(u => u.email === email);
+    if (!found || found.role !== role) return false;
+
+    if (found.role !== role) return false;
+
+    const hashedPassword = await hashPassword(password);
+    if (!found.password || hashedPassword !== found.password) return false;
+
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
+    setUser({ ...found, role: found.role, profesorId: prof?.id ?? null });
     setUser({ ...found, profesorId: prof?.id ?? null });
     setCurrentView('dashboard');
     return true;
@@ -92,16 +111,23 @@ export default function App() {
 
     setUser(prev => ({ ...prev, ...permittedFields }));
     setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...permittedFields } : u));
+    const allowedFields = {};
+    if (fields.nombre !== undefined) allowedFields.nombre = fields.nombre;
+    if (fields.apellido !== undefined) allowedFields.apellido = fields.apellido;
+    if (fields.email !== undefined) allowedFields.email = fields.email;
+
+    setUser(prev => ({ ...prev, ...allowedFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...allowedFields } : u));
 
     // Sync con alumnos/profesores si corresponde
     if (user.role === 'Alumno') {
       setAlumnos(prev => prev.map(a => a.email === user.email
-        ? { ...a, ...permittedFields }
+        ? { ...a, ...allowedFields }
         : a));
     }
     if (user.role === 'Profesor') {
       setProfesores(prev => prev.map(p => p.email === user.email
-        ? { ...p, ...permittedFields }
+        ? { ...p, ...allowedFields }
         : p));
     }
     addToast('Datos actualizados correctamente');
