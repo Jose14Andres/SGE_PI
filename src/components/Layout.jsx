@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Avatar } from './UI.jsx';
 import { ROLES_PERMISSIONS } from '../config/permissions.js';
 import { getNavigationForRole, APP_MODULES } from '../config/modules.js';
@@ -24,8 +24,10 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
   };
   const [openGroups, setOpenGroups] = useState(initialOpen);
 
-  useEffect(() => {
-    // Siempre mantener abierto el grupo con el currentView
+  // Synchronize state during render (derived state pattern)
+  // Ensure we don't trigger cascading renders infinitely by checking if an update is needed
+  const needsUpdate = groups.some(g => g.items.some(i => i.id === currentView) && !openGroups[g.group]);
+  if (needsUpdate) {
     setOpenGroups(prev => {
       const next = { ...prev };
       let changed = false;
@@ -37,12 +39,11 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
       });
       return changed ? next : prev;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentView, user.role]);
+  }
 
   const toggleGroup = (name) => setOpenGroups(p => ({ ...p, [name]: !p[name] }));
 
-  const SidebarContent = () => (
+  const renderSidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-6 pt-6 pb-4 border-b border-white/10">
@@ -124,7 +125,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
     <div className="flex h-screen overflow-hidden">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-navy-900/70 backdrop-blur-md border-r border-white/10 flex-shrink-0">
-        <SidebarContent />
+        {renderSidebarContent()}
       </aside>
 
       {/* Mobile overlay */}
@@ -132,7 +133,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
         <div className="fixed inset-0 z-40 md:hidden flex">
           <div className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
           <aside className="relative z-50 flex flex-col w-64 bg-navy-900 border-r border-white/10 animate-slide-in">
-            <SidebarContent />
+            {renderSidebarContent()}
           </aside>
         </div>
       )}

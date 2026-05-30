@@ -60,6 +60,19 @@ export default function App() {
   const handleLogin = useCallback(async (email, password, role) => {
     if (typeof email !== 'string' || typeof password !== 'string' || typeof role !== 'string') return false;
     if (email.length > 100 || password.length > 100 || password.length === 0) return false;
+    const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
+    if (!ROLES.includes(role)) return false;
+
+    let found;
+    const isDevBypass = import.meta.env.DEV && !password && DEMO_USERS.some(d => d.email === email && d.role === role);
+    if (isDevBypass) {
+      found = users.find(u => u.email === email && u.role === role);
+    } else {
+      const hashedPassword = await hashPassword(password || '');
+      found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
+    }
+
+    if (!found) return false;
 
     const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
     if (!ROLES.includes(role)) return false;
@@ -90,6 +103,14 @@ export default function App() {
 
   const handleUpdateProfile = useCallback((fields) => {
     // SECURITY: Prevent Mass Assignment by explicitly extracting only permitted fields
+    const permittedFields = {
+      ...(fields.nombre !== undefined && { nombre: fields.nombre }),
+      ...(fields.apellido !== undefined && { apellido: fields.apellido }),
+      ...(fields.email !== undefined && { email: fields.email })
+    };
+
+    setUser(prev => ({ ...prev, ...permittedFields }));
+    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ...permittedFields } : u));
     const allowedFields = {};
     if (fields.nombre !== undefined) allowedFields.nombre = fields.nombre;
     if (fields.apellido !== undefined) allowedFields.apellido = fields.apellido;

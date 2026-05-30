@@ -216,6 +216,8 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   // Helps prevent expensive recalculation on every render (e.g. tab changes).
   const { misMaterias, todosMisAlumnos } = useMemo(() => {
     const mMaterias = materias.filter(m => m.profesorId === user.profesorId);
+    const misCursoIdsSet = new Set(mMaterias.map(m => m.cursoId));
+    const todosAlumnos = alumnos.filter(a => misCursoIdsSet.has(a.cursoId));
     const cursoIdsSet = new Set(mMaterias.map(m => m.cursoId));
     const todosAlumnos = alumnos.filter(a => cursoIdsSet.has(a.cursoId));
     return { misMaterias: mMaterias, todosMisAlumnos: todosAlumnos };

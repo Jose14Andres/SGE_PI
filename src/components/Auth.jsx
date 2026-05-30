@@ -15,6 +15,8 @@ export default function Auth({ onLogin }) {
   const [attempts, setAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState(null);
 
+  const isLockedOut = lockoutUntil !== null;
+
   useEffect(() => {
     if (lockoutUntil) {
       const now = Date.now();
@@ -43,6 +45,7 @@ export default function Auth({ onLogin }) {
     e.preventDefault();
     setError('');
 
+    if (isLockedOut) {
     // Check if the lockout time has expired before checking isLockedOut
     let actuallyLockedOut = isLockedOut;
     if (lockoutUntil !== null && Date.now() >= lockoutUntil) {
@@ -72,6 +75,7 @@ export default function Auth({ onLogin }) {
       setAttempts(0);
     }
 
+    if (!email || (!password && !import.meta.env.DEV)) { setError('Por favor complete todos los campos.'); return; }
     if (!email || (!password && !import.meta.env.DEV)) {
       setError('Por favor complete todos los campos.');
       return;
