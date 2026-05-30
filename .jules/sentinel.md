@@ -29,3 +29,7 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** The `handleLogin` function in the client-side mock backend omitted input validation (type, length, valid options) before processing inputs, leaving the application vulnerable to DoS attacks via extremely large payload hashing or unexpected behavior from incorrect types.
 **Learning:** Always validate input lengths, types, and domains for both authentication boundaries and internal states, even if it is a simulated frontend mock.
 **Prevention:** Incorporate boundary checks and explicit type checking for variables handling authentication inputs before any operations like hashing or database lookups.
+## 2024-05-30 - [Strict Role Validation in Authentication Mock]
+**Vulnerability:** The client-side mock backend verified credentials (email and password) but accepted the user's `role` dynamically based on the requested role, overriding their actual role stored in the mock database. This allows privilege escalation or Authorization Bypass, meaning an 'Alumno' could login with their credentials and choose 'Administrador' from the role dropdown, and be granted Admin privileges.
+**Learning:** Never blindly trust user-supplied roles or privileges during authentication, even in mock logic. Always assert that the requested role strictly matches the server-side (or stored mock database) role.
+**Prevention:** In authentication functions, add an explicit check verifying the requested role against the stored role: `if (!found || found.role !== role) return false;`.

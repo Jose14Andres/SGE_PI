@@ -28,8 +28,6 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
     // ⚡ Bolt: O(1) Map Lookups for Related Entities
     const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     const arr = [];
-    // ⚡ Bolt: O(1) Map Lookups for Related Entities
-    const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     alumnos.forEach(a => {
       const c = cursosById[a.cursoId];
       arr.push({ ...a, rol: 'Alumno', carrera: c?.carrera || '—', nivel: c?.nivel || '—' });
@@ -224,17 +222,6 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
     const todosAlumnos = alumnos.filter(a => misCursoIds.includes(a.cursoId));
     return { misMaterias: mMaterias, todosMisAlumnos: todosAlumnos };
   }, [materias, alumnos, user.profesorId]);
-  // Optimization: Memoize to avoid O(N*M) filters and re-evaluations on every render.
-  const misMaterias = useMemo(() => materias.filter(m => m.profesorId === user.profesorId), [materias, user.profesorId]);
-
-  const todosMisAlumnos = useMemo(() => {
-    const cursoIdsSet = new Set(misMaterias.map(m => m.cursoId));
-    return alumnos.filter(a => cursoIdsSet.has(a.cursoId));
-  }, [alumnos, misMaterias]);
-  // ⚡ Performance Optimization: Memoized O(N) filters and mappings to prevent expensive recalculations on every render (e.g. when switching tabs).
-  const misMaterias = useMemo(() => materias.filter(m => m.profesorId === user.profesorId), [materias, user.profesorId]);
-  const misCursoIds = useMemo(() => [...new Set(misMaterias.map(m => m.cursoId))], [misMaterias]);
-  const todosMisAlumnos = useMemo(() => alumnos.filter(a => misCursoIds.includes(a.cursoId)), [alumnos, misCursoIds]);
 
   const [activeTab, setActiveTab] = useState('calificaciones');
   const [selectedMateria, setSelectedMateria] = useState(misMaterias[0]?.id || '');
@@ -245,17 +232,6 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
     const delCurso = materia ? alumnos.filter(a => a.cursoId === materia.cursoId) : todosMisAlumnos;
     return { materiaElegida: materia, alumnosDelCurso: delCurso };
   }, [misMaterias, selectedMateria, alumnos, todosMisAlumnos]);
-  // Optimization: O(1) map lookup instead of multiple .find() calls
-  const materiasById = useMemo(() => Object.fromEntries(misMaterias.map(m => [m.id, m])), [misMaterias]);
-  const materiaElegida = materiasById[selectedMateria];
-
-  const alumnosDelCurso = useMemo(() => (
-    materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos
-  ), [alumnos, materiaElegida, todosMisAlumnos]);
-  const materiaElegida = useMemo(() => misMaterias.find(m => m.id === selectedMateria), [misMaterias, selectedMateria]);
-  const alumnosDelCurso = useMemo(() =>
-    materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos,
-  [materiaElegida, alumnos, todosMisAlumnos]);
 
   const tabs = [
     { id: 'horarios', label: 'Mis Horarios', icon: '📅' },
