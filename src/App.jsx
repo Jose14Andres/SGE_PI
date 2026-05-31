@@ -35,7 +35,8 @@ export default function App() {
     { id: 'u3', email: 'profesor@sge.edu', password: 'cffa965d9faa1d453f2d336294b029a7f84f485f75ce2a2c723065453b12b03b', role: 'Profesor', nombre: 'Eduardo', apellido: 'Salgado', avatar: null },
     { id: 'u4', email: 'alumno@sge.edu', password: 'c1042ecc51482cef39f2e89e1273a35074db7f873f1ac6050efd546a9bceefc0', role: 'Alumno', nombre: 'Lucía', apellido: 'Torres', avatar: null },
   ];
-  const [users, setUsers] = useState(DEMO_USERS.length > 0 ? DEMO_USERS : TEST_USERS);
+  // Strictly isolate test user state variables
+  const [users, setUsers] = useState(import.meta.env.DEV && DEMO_USERS.length > 0 ? DEMO_USERS : TEST_USERS);
   const [alumnos, setAlumnos] = useState(INITIAL_ALUMNOS);
   const [profesores, setProfesores] = useState(INITIAL_PROFESORES);
   const [cursos, setCursos] = useState(INITIAL_CURSOS);
@@ -63,31 +64,13 @@ export default function App() {
     const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
     if (!ROLES.includes(role)) return false;
 
-    let found;
-    const isDevBypass = import.meta.env.DEV && !password && DEMO_USERS.some(d => d.email === email && d.role === role);
-    if (isDevBypass) {
-      found = users.find(u => u.email === email && u.role === role);
-    } else {
-      const hashedPassword = await hashPassword(password || '');
-      found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
-    }
+    const hashedPassword = await hashPassword(password);
+    const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
 
     if (!found) return false;
 
-    const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
-    if (!ROLES.includes(role)) return false;
-
-    const found = users.find(u => u.email === email);
-    if (!found || found.role !== role) return false;
-
-    if (found.role !== role) return false;
-
-    const hashedPassword = await hashPassword(password);
-    if (!found.password || hashedPassword !== found.password) return false;
-
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
-    setUser({ ...found, role: found.role, profesorId: prof?.id ?? null });
     setUser({ ...found, profesorId: prof?.id ?? null });
     setCurrentView('dashboard');
     return true;
