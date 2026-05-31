@@ -25,7 +25,6 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
 
   // Consolidar todos los usuarios
   const todosLosUsuarios = useMemo(() => {
-    // ⚡ Bolt: O(1) Map Lookups for Related Entities
     const cursosById = Object.fromEntries(cursos.map(c => [c.id, c]));
     const arr = [];
     alumnos.forEach(a => {
@@ -222,6 +221,12 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
     const cursoIds = [...new Set(misMaterias.map(m => m.cursoId))];
     return alumnos.filter(a => cursoIds.includes(a.cursoId));
   }, [alumnos, misMaterias]);
+  const { misMaterias, todosMisAlumnos } = useMemo(() => {
+    const mMaterias = materias.filter(m => m.profesorId === user.profesorId);
+    const misCursoIdsSet = new Set(mMaterias.map(m => m.cursoId));
+    const todosAlumnos = alumnos.filter(a => misCursoIdsSet.has(a.cursoId));
+    return { misMaterias: mMaterias, todosMisAlumnos: todosAlumnos };
+  }, [materias, alumnos, user.profesorId]);
 
   const [activeTab, setActiveTab] = useState('calificaciones');
   const [selectedMateria, setSelectedMateria] = useState(misMaterias[0]?.id || '');
@@ -233,6 +238,12 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   const alumnosDelCurso = useMemo(() => (
     materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos
   ), [alumnos, materiaElegida, todosMisAlumnos]);
+
+  const { materiaElegida, alumnosDelCurso } = useMemo(() => {
+    const materia = materiasById[selectedMateria];
+    const delCurso = materia ? alumnos.filter(a => a.cursoId === materia.cursoId) : todosMisAlumnos;
+    return { materiaElegida: materia, alumnosDelCurso: delCurso };
+  }, [materiasById, selectedMateria, alumnos, todosMisAlumnos]);
 
   const tabs = [
     { id: 'horarios', label: 'Mis Horarios', icon: '📅' },

@@ -15,6 +15,8 @@ export default function Auth({ onLogin }) {
   const [attempts, setAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState(null);
 
+  const isLockedOut = lockoutUntil !== null;
+
   useEffect(() => {
     if (lockoutUntil) {
       const now = Date.now();
@@ -26,8 +28,12 @@ export default function Auth({ onLogin }) {
         }, lockoutUntil - now);
         return () => clearTimeout(timeout);
       } else {
-        setLockoutUntil(null);
-        setAttempts(0);
+        // Schedule state updates asynchronously to avoid cascading renders
+        const immediate = setTimeout(() => {
+          setLockoutUntil(null);
+          setAttempts(0);
+        }, 0);
+        return () => clearTimeout(immediate);
       }
     }
   }, [lockoutUntil]);
@@ -35,6 +41,7 @@ export default function Auth({ onLogin }) {
   const isLockedOut = lockoutUntil !== null;
 
   // Seguridad: Control de intentos fallidos para mitigar ataques de fuerza bruta
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -51,12 +58,23 @@ export default function Auth({ onLogin }) {
 
     // Security: Check if user is locked out due to too many failed attempts
     if (isLockedOut) {
-      const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
-      setError(`Demasiados intentos. Intente nuevamente en ${remainingSeconds} segundos.`);
-      return;
+      // Check if the lockout time has expired before checking isLockedOut
+      let actuallyLockedOut = isLockedOut;
+      if (lockoutUntil !== null && Date.now() >= lockoutUntil) {
+        setLockoutUntil(null);
+        setAttempts(0);
+        actuallyLockedOut = false;
+      }
+
+      if (actuallyLockedOut) {
+        const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
+        setError(`Demasiados intentos. Intente nuevamente en ${remainingSeconds} segundos.`);
+        return;
+      }
     }
 
     if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
+    if (email.length > 100 || password.length > 100) { setError('Entrada demasiado larga.'); return; }
 
     const result = await onLogin(email, password, role);
     if (!result) {
@@ -65,6 +83,11 @@ export default function Auth({ onLogin }) {
 
       if (newAttempts >= 5) {
         setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      if (newAttempts >= 5) {
+        setLockoutUntil(Date.now() + 30000); // Lockout for 30 seconds
         setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
       } else {
         setError('Credenciales incorrectas o rol no coincide.');
@@ -72,20 +95,11 @@ export default function Auth({ onLogin }) {
       setPassword(''); // Seguridad: limpiar input password en error
     } else {
       setFailedAttempts(0);
+      // Reset on success
+      setAttempts(0);
       setLockoutUntil(null);
     }
   };
-
-  // Seguridad: Credenciales removidas del código fuente.
-  // En modo DEV el backend mockeado procesará el login solo con rol/email.
-  const demos = [
-    { label: 'Admin', email: 'admin@sge.edu', role: 'Administrador' },
-    { label: 'Secretaria', email: 'secretaria@sge.edu', role: 'Secretaria' },
-    { label: 'Profesor', email: 'profesor@sge.edu', role: 'Profesor' },
-    { label: 'Alumno', email: 'alumno@sge.edu', role: 'Alumno' },
-  ];
-
-  const fillDemo = (d) => { setEmail(d.email); setPassword(''); setRole(d.role); setError(''); };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 animate-fade-in">
@@ -163,26 +177,6 @@ export default function Auth({ onLogin }) {
               {isLockedOut ? 'Bloqueado' : 'Iniciar Sesión'}
             </button>
           </form>
-
-          {/* Demo Credentials - Aisladas a entorno DEV */}
-          {import.meta.env.DEV && (
-            <div className="mt-6 border-t border-white/5 pt-5">
-              <p className="text-xs text-slate-500 mb-3 text-center uppercase tracking-wider">Modo Demostración</p>
-              <div className="grid grid-cols-2 gap-2">
-                {demos.map(d => (
-                  <button
-                    key={d.label}
-                    onClick={() => fillDemo(d)}
-                    type="button"
-                    className="text-xs bg-navy-900/40 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-lg px-3 py-2 text-slate-400 hover:text-accent-light transition-all text-left"
-                  >
-                    <span className="font-medium block text-slate-300">{d.label}</span>
-                    <span className="text-slate-600">{d.email}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
