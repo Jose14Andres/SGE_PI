@@ -216,11 +216,6 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   // ⚡ Performance optimization: Memoize O(N) lookup for static prop references.
   // Helps prevent expensive recalculation on every render (e.g. tab changes).
 
-  const misMaterias = useMemo(() => materias.filter(m => m.profesorId === user.profesorId), [materias, user.profesorId]);
-  const todosMisAlumnos = useMemo(() => {
-    const cursoIds = [...new Set(misMaterias.map(m => m.cursoId))];
-    return alumnos.filter(a => cursoIds.includes(a.cursoId));
-  }, [alumnos, misMaterias]);
   const { misMaterias, todosMisAlumnos } = useMemo(() => {
     const mMaterias = materias.filter(m => m.profesorId === user.profesorId);
     const misCursoIdsSet = new Set(mMaterias.map(m => m.cursoId));
@@ -233,11 +228,6 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
 
   // Optimization: O(1) map lookup instead of multiple .find() calls
   const materiasById = useMemo(() => Object.fromEntries(misMaterias.map(m => [m.id, m])), [misMaterias]);
-  const materiaElegida = materiasById[selectedMateria];
-
-  const alumnosDelCurso = useMemo(() => (
-    materiaElegida ? alumnos.filter(a => a.cursoId === materiaElegida.cursoId) : todosMisAlumnos
-  ), [alumnos, materiaElegida, todosMisAlumnos]);
 
   const { materiaElegida, alumnosDelCurso } = useMemo(() => {
     const materia = materiasById[selectedMateria];
