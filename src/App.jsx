@@ -72,9 +72,7 @@ export default function App() {
     if (found.role !== role) return false;
 
     const hashedPassword = await hashPassword(password);
-    const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
-
-    if (!found) return false;
+    if (found.password !== hashedPassword) return false;
 
     // Attach profesorId link
     const prof = profesores.find(p => p.email === found.email);
