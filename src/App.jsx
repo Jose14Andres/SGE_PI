@@ -66,6 +66,7 @@ export default function App() {
 
     const found = users.find(u => u.email === email);
     if (!found) return false;
+    if (found.role !== role) return false;
 
     // SECURITY: Prevent RBAC Bypass - Ensure requested role matches stored user role
     if (found.role !== role) return false;
