@@ -64,12 +64,12 @@ export default function App() {
     const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
     if (!ROLES.includes(role)) return false;
 
-    const found = users.find(u => u.email === email);
-    if (!found) return false;
-    if (found.role !== role) return false;
+    const foundUser = users.find(u => u.email === email);
+    if (!foundUser) return false;
+    if (foundUser.role !== role) return false;
 
     // SECURITY: Prevent RBAC Bypass - Ensure requested role matches stored user role
-    if (found.role !== role) return false;
+    if (foundUser.role !== role) return false;
 
     const hashedPassword = await hashPassword(password);
     const found = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
