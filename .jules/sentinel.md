@@ -30,6 +30,10 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Learning:** Always validate input lengths, types, and domains for both authentication boundaries and internal states, even if it is a simulated frontend mock.
 **Prevention:** Incorporate boundary checks and explicit type checking for variables handling authentication inputs before any operations like hashing or database lookups.
 
+## 2026-05-29 - [Preventing Role-Based Access Control (RBAC) Bypass in Frontend Auth]
+**Vulnerability:** The client-side `handleLogin` function did not verify that the role requested by the user during login actually matched the user's provisioned role stored in the system state. This allowed an attacker to log in to another role (e.g., an 'Alumno' requesting the 'Administrador' role) and gain unauthorized privileges within the UI because the frontend application incorrectly trusted the requested role instead of the stored role.
+**Learning:** Even when authentication is mocked on the frontend, enforcing strict role validation is critical. Trusting user-provided input over stored system state for authorization claims bypasses RBAC entirely and leads to privilege escalation.
+**Prevention:** Always validate that the requested role (or any requested authorization scope) explicitly matches the authoritative role stored for the authenticated user before granting access and establishing the user session (`if (found.role !== requestedRole) return false;`).
 ## 2024-05-26 - [Missing File Size Limits on Client-Side File Processing]
 **Vulnerability:** The avatar image upload component in `src/components/Profile.jsx` did not enforce any size limit before reading the file into memory via `FileReader.readAsDataURL()`. An attacker could exploit this to freeze or crash the browser by uploading excessively large files (Client-Side DoS).
 **Learning:** Client-side processing of untrusted files requires the same defensive checks as server-side processing to protect against memory exhaustion.
