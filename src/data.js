@@ -40,6 +40,23 @@ export const INITIAL_PROFESORES = [
 // Medicina:   12 niveles × secciones A, B
 // Marketing:   8 niveles × secciones A, B
 
+function generarCursosPorCarrera(c) {
+  const cursos = [];
+  for (let n = 1; n <= c.niveles; n++) {
+    for (const s of c.secciones) {
+      cursos.push({
+        id: `${c.codigo}-N${n}-${s}`,
+        nombre: `${c.nombre} – ${nl(n)} ${s}`,
+        carrera: c.nombre,
+        nivel: nl(n),
+        paralelo: s,
+        anioLectivo: '2024-2025',
+      });
+    }
+  }
+  return cursos;
+}
+
 function generarCursos() {
   const carreras = [
     { codigo: 'ING', nombre: 'Ingeniería',  niveles: 8,  secciones: ['A','B','C'] },
@@ -48,22 +65,7 @@ function generarCursos() {
     { codigo: 'MED', nombre: 'Medicina',    niveles: 12, secciones: ['A','B'] },
     { codigo: 'MKT', nombre: 'Marketing',   niveles: 8,  secciones: ['A','B'] },
   ];
-  const cursos = [];
-  for (const c of carreras) {
-    for (let n = 1; n <= c.niveles; n++) {
-      for (const s of c.secciones) {
-        cursos.push({
-          id: `${c.codigo}-N${n}-${s}`,
-          nombre: `${c.nombre} – ${nl(n)} ${s}`,
-          carrera: c.nombre,
-          nivel: nl(n),
-          paralelo: s,
-          anioLectivo: '2024-2025',
-        });
-      }
-    }
-  }
-  return cursos;
+  return carreras.flatMap(generarCursosPorCarrera);
 }
 
 export const INITIAL_CURSOS = generarCursos();
