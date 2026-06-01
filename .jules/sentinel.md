@@ -42,3 +42,7 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** The client-side mock backend verified credentials (email and password) but accepted the user's `role` dynamically based on the requested role, overriding their actual role stored in the mock database. This allows privilege escalation or Authorization Bypass, meaning an 'Alumno' could login with their credentials and choose 'Administrador' from the role dropdown, and be granted Admin privileges.
 **Learning:** Never blindly trust user-supplied roles or privileges during authentication, even in mock logic. Always assert that the requested role strictly matches the server-side (or stored mock database) role.
 **Prevention:** In authentication functions, add an explicit check verifying the requested role against the stored role: `if (!found || found.role !== role) return false;`.
+## 2024-06-03 - [Missing File Size Limits on Client-Side File Processing]
+**Vulnerability:** The avatar image upload component in `src/components/Profile.jsx` did not enforce any size limit before reading the file into memory via `FileReader.readAsDataURL()`. An attacker could exploit this to freeze or crash the browser by uploading excessively large files (Client-Side DoS).
+**Learning:** Client-side processing of untrusted files requires the same defensive checks as server-side processing to protect against memory exhaustion.
+**Prevention:** Always validate file size and type *before* initiating expensive operations like `FileReader` conversions.

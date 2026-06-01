@@ -64,12 +64,12 @@ export default function App() {
     const ROLES = ['Administrador', 'Secretaria', 'Profesor', 'Alumno'];
     if (!ROLES.includes(role)) return false;
 
-    const found = users.find(u => u.email === email);
-    if (!found) return false;
-    if (found.role !== role) return false;
+    const foundUser = users.find(u => u.email === email);
+    if (!foundUser) return false;
+    if (foundUser.role !== role) return false;
 
     // SECURITY: Prevent RBAC Bypass - Ensure requested role matches stored user role
-    if (found.role !== role) return false;
+    if (foundUser.role !== role) return false;
 
     const hashedPassword = await hashPassword(password);
     const authenticatedUser = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
@@ -79,6 +79,11 @@ export default function App() {
     // Attach profesorId link
     const prof = profesores.find(p => p.email === authenticatedUser.email);
     setUser({ ...authenticatedUser, profesorId: prof?.id ?? null });
+    if (foundUser.password !== hashedPassword) return false;
+
+    // Attach profesorId link
+    const prof = profesores.find(p => p.email === foundUser.email);
+    setUser({ ...foundUser, profesorId: prof?.id ?? null });
     setCurrentView('dashboard');
     return true;
   }, [users, profesores]);

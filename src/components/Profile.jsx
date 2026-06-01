@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChangePassword }) {
   const [preview, setPreview] = useState(user.avatar || null);
   const [avatarSaved, setAvatarSaved] = useState(false);
+  const [avatarError, setAvatarError] = useState('');
   const fileRef = useRef();
 
   // Edit profile state
@@ -18,7 +19,16 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
 
   const handleFile = (e) => {
     const file = e.target.files[0];
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file || !file.type.startsWith('image/')) {
+      setAvatarError('Por favor selecciona una imagen válida.');
+      return;
+    }
+    // SECURITY: Limit file size to 5MB to prevent Client-Side DoS and excessive memory usage
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError('El archivo es demasiado grande. El límite es de 5MB.');
+      return;
+    }
+    setAvatarError('');
     const reader = new FileReader();
     reader.onload = (ev) => { setPreview(ev.target.result); setAvatarSaved(false); };
     reader.readAsDataURL(file);
@@ -101,6 +111,7 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
             Guardar foto de perfil
           </button>
         )}
+        {avatarError && <p className="text-center text-red-400 text-sm">{avatarError}</p>}
         {avatarSaved && <p className="text-center text-emerald-400 text-sm">✓ Foto actualizada</p>}
       </div>
 

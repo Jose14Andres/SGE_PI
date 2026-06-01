@@ -15,8 +15,6 @@ export default function Auth({ onLogin }) {
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState(null);
 
-  const isLockedOut = lockoutUntil !== null;
-
   useEffect(() => {
     if (lockoutUntil) {
       const now = Date.now();
@@ -43,15 +41,6 @@ export default function Auth({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (lockoutUntil && Date.now() < lockoutUntil) {
-      const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
-      setError(`Demasiados intentos. Por favor espere ${remainingSeconds} segundos.`);
-      return;
-    } else if (lockoutUntil && Date.now() >= lockoutUntil) {
-      setLockoutUntil(null);
-      setFailedAttempts(0);
-    }
     if (!email || (!password && !import.meta.env.DEV)) { setError('Por favor complete todos los campos.'); return; }
 
     // Security: Check if user is locked out due to too many failed attempts
@@ -81,6 +70,11 @@ export default function Auth({ onLogin }) {
 
       if (newAttempts >= 5) {
         setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      if (newAttempts >= 5) {
+        setLockoutUntil(Date.now() + 30000); // Lockout for 30 seconds
         setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
       } else {
         setError('Credenciales incorrectas o rol no coincide.');
@@ -88,6 +82,8 @@ export default function Auth({ onLogin }) {
       setPassword(''); // Seguridad: limpiar input password en error
     } else {
       setFailedAttempts(0);
+      // Reset on success
+      setAttempts(0);
       setLockoutUntil(null);
     }
   };
