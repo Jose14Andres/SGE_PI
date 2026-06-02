@@ -12,7 +12,7 @@ export default function Auth({ onLogin }) {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Administrador');
   const [error, setError] = useState('');
-  const [attempts, setAttempts] = useState(0);
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function Auth({ onLogin }) {
       if (now < lockoutUntil) {
         const timeout = setTimeout(() => {
           setLockoutUntil(null);
-          setAttempts(0);
+          setFailedAttempts(0);
           setError('');
         }, lockoutUntil - now);
         return () => clearTimeout(timeout);
@@ -29,14 +29,12 @@ export default function Auth({ onLogin }) {
         // Schedule state updates asynchronously to avoid cascading renders
         const immediate = setTimeout(() => {
           setLockoutUntil(null);
-          setAttempts(0);
+          setFailedAttempts(0);
         }, 0);
         return () => clearTimeout(immediate);
       }
     }
   }, [lockoutUntil]);
-
-  const isLockedOut = lockoutUntil !== null;
 
   // Seguridad: Control de intentos fallidos para mitigar ataques de fuerza bruta
 
@@ -51,7 +49,7 @@ export default function Auth({ onLogin }) {
       let actuallyLockedOut = isLockedOut;
       if (lockoutUntil !== null && Date.now() >= lockoutUntil) {
         setLockoutUntil(null);
-        setAttempts(0);
+        setFailedAttempts(0);
         actuallyLockedOut = false;
       }
 
@@ -67,6 +65,11 @@ export default function Auth({ onLogin }) {
 
     const result = await onLogin(email, password, role);
     if (!result) {
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+
+      if (newAttempts >= 5) {
+        setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
 
@@ -78,6 +81,7 @@ export default function Auth({ onLogin }) {
       }
       setPassword(''); // Seguridad: limpiar input password en error
     } else {
+      setFailedAttempts(0);
       // Reset on success
       setAttempts(0);
       setLockoutUntil(null);
