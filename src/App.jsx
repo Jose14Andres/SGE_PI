@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 
 import { DEMO_USERS, INITIAL_CURSOS, INITIAL_PROFESORES, INITIAL_MATERIAS, INITIAL_ALUMNOS } from './data.js';
-import { hashPassword } from './utils/crypto.js';
+import { hashPassword, signSession, verifySession } from './utils/crypto.js';
 import Auth from './components/Auth.jsx';
 import Layout from './components/Layout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
@@ -45,10 +45,40 @@ export default function App() {
   const [toasts, setToasts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Load session from sessionStorage securely
   useEffect(() => {
+    const loadSession = async () => {
+      const storedSession = sessionStorage.getItem('sge_session');
+      if (storedSession) {
+        try {
+          const parsed = JSON.parse(storedSession);
+          const { user: storedUser, signature } = parsed;
+
+          // Integrity check using mock MAC
+          const isValid = await verifySession(storedUser.id, storedUser.role, signature);
+          if (isValid) {
+            // Prevent Role Tampering by matching role to our data (or strictly validating)
+            const trueUser = users.find(u => u.id === storedUser.id);
+            if (trueUser && trueUser.role === storedUser.role) {
+              setUser({ ...storedUser, profesorId: trueUser.role === 'Profesor' ? (profesores.find(p => p.email === trueUser.email)?.id ?? null) : null });
+              setLoading(false);
+              return;
+            }
+          }
+          // Invalid signature or tampered role -> destroy session
+          sessionStorage.removeItem('sge_session');
+        } catch {
+          sessionStorage.removeItem('sge_session');
+        }
+      }
+      setLoading(false);
+    };
+
+    loadSession();
+    // Simulate loading delay for demo only if no session
     const t = setTimeout(() => setLoading(false), 800);
     return () => clearTimeout(t);
-  }, []);
+  }, [users, profesores]);
 
   const addToast = useCallback((message, type = 'success') => {
     const id = Date.now();
@@ -76,12 +106,22 @@ export default function App() {
 
     // Attach profesorId link
     const prof = profesores.find(p => p.email === foundUser.email);
-    setUser({ ...foundUser, profesorId: prof?.id ?? null });
+    const sessionUser = { ...foundUser, profesorId: prof?.id ?? null };
+    setUser(sessionUser);
+
+    // Save session securely
+    const signature = await signSession(sessionUser.id, sessionUser.role);
+    sessionStorage.setItem('sge_session', JSON.stringify({ user: sessionUser, signature }));
+
     setCurrentView('dashboard');
     return true;
   }, [users, profesores]);
 
-  const handleLogout = () => { setUser(null); setCurrentView('dashboard'); };
+  const handleLogout = () => {
+    setUser(null);
+    sessionStorage.removeItem('sge_session');
+    setCurrentView('dashboard');
+  };
 
   const handleUpdateAvatar = useCallback((avatar) => {
     setUser(prev => ({ ...prev, avatar }));
