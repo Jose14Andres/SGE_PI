@@ -26,3 +26,30 @@ export function secureRandom() {
   window.crypto.getRandomValues(array);
   return array[0] / (0xffffffff + 1);
 }
+
+// SECRET KEY para simular firma de sesión HMAC-SHA256 en frontend (MOCK)
+const MOCK_SESSION_SECRET = 'sge_secure_session_secret_2024';
+
+/**
+ * Genera una firma básica (MAC) simulada para los datos de sesión para prevenir Tampering.
+ * @param {string} id - ID del usuario.
+ * @param {string} role - Rol del usuario.
+ * @returns {Promise<string>} Firma generada.
+ */
+export async function signSession(id, role) {
+  const payload = `${id}:${role}:${MOCK_SESSION_SECRET}`;
+  return await hashPassword(payload);
+}
+
+/**
+ * Verifica la firma de la sesión.
+ * @param {string} id - ID del usuario.
+ * @param {string} role - Rol del usuario.
+ * @param {string} signature - Firma a verificar.
+ * @returns {Promise<boolean>} Verdadero si la firma coincide.
+ */
+export async function verifySession(id, role, signature) {
+  if (!id || !role || !signature) return false;
+  const expectedSignature = await signSession(id, role);
+  return signature === expectedSignature;
+}
