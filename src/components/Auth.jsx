@@ -14,6 +14,23 @@ export default function Auth({ onLogin }) {
   const [error, setError] = useState('');
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState(null);
+  const [isLockedOut, setIsLockedOut] = useState(false);
+
+  useEffect(() => {
+    if (lockoutUntil) {
+      const checkLockout = () => {
+        setIsLockedOut(Date.now() < lockoutUntil);
+      };
+      checkLockout();
+      const interval = setInterval(checkLockout, 1000);
+      return () => clearInterval(interval);
+    } else {
+      const immediate = setTimeout(() => {
+        setIsLockedOut(false);
+      }, 0);
+      return () => clearTimeout(immediate);
+    }
+  }, [lockoutUntil]);
 
   useEffect(() => {
     if (lockoutUntil) {
@@ -70,11 +87,6 @@ export default function Auth({ onLogin }) {
 
       if (newAttempts >= 5) {
         setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
-      const newAttempts = attempts + 1;
-      setAttempts(newAttempts);
-
-      if (newAttempts >= 5) {
-        setLockoutUntil(Date.now() + 30000); // Lockout for 30 seconds
         setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
       } else {
         setError('Credenciales incorrectas o rol no coincide.');
@@ -83,7 +95,6 @@ export default function Auth({ onLogin }) {
     } else {
       setFailedAttempts(0);
       // Reset on success
-      setAttempts(0);
       setLockoutUntil(null);
     }
   };
