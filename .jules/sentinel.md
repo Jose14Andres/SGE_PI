@@ -50,3 +50,8 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** User sessions were previously non-persistent across tab reloads, but standard unencrypted `localStorage` or `sessionStorage` implementations are vulnerable to Local State Tampering and Session Hijacking.
 **Learning:** Even in purely frontend simulated environments, persisting sensitive session data requires integrity checks. An attacker could manually alter the JSON object in `sessionStorage` to change their role and achieve horizontal/vertical privilege escalation.
 **Prevention:** Implement a cryptographic integrity check (e.g., a lightweight HMAC) when storing sessions locally. Always re-verify the signature and cross-reference roles against the internal mock data when restoring the session from storage. Use `sessionStorage` instead of `localStorage` to ensure the lifecycle strictly ends when the browser tab is closed.
+
+## 2024-05-24 - [Syntax Error Lockout Bypass]
+**Vulnerability:** A syntax error within the failed attempts counter bypassed the UI lockout mechanism.
+**Learning:** The `setAttempts` undefined variable error caused an implicit bypass/fail-open of the application's rate-limiting.
+**Prevention:** Ensure strict linting is passed and components are properly tested for edge cases.

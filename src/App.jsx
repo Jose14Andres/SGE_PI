@@ -107,12 +107,12 @@ export default function App() {
     if (!authenticatedUser) return false;
 
     // Attach profesorId link
-    const prof = profesores.find(p => p.email === authenticatedUser.email);
+    let prof = profesores.find(p => p.email === authenticatedUser.email);
     setUser({ ...authenticatedUser, profesorId: prof?.id ?? null });
     if (foundUser.password !== hashedPassword) return false;
 
     // Attach profesorId link
-    const prof = profesores.find(p => p.email === foundUser.email);
+    prof = profesores.find(p => p.email === foundUser.email);
     const sessionUser = { ...foundUser, profesorId: prof?.id ?? null };
     setUser(sessionUser);
 
