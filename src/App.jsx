@@ -137,6 +137,16 @@ export default function App() {
   }, [user, addToast]);
 
   const handleUpdateProfile = useCallback((fields) => {
+    if (!fields || typeof fields !== 'object') {
+      addToast('Datos inválidos.', 'error');
+      return;
+    }
+    if ((fields.nombre && (typeof fields.nombre !== 'string' || fields.nombre.length > 100)) ||
+        (fields.apellido && (typeof fields.apellido !== 'string' || fields.apellido.length > 100)) ||
+        (fields.email && (typeof fields.email !== 'string' || fields.email.length > 100))) {
+      addToast('Los campos deben ser texto y no exceder los 100 caracteres.', 'error');
+      return;
+    }
     // SECURITY: Prevent Mass Assignment by explicitly extracting only permitted fields
     const permittedFields = {
       ...(fields.nombre !== undefined && { nombre: fields.nombre }),
@@ -169,6 +179,10 @@ export default function App() {
   }, [user, addToast]);
 
   const handleChangePassword = useCallback(async (currentPassword, newPassword) => {
+    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' || currentPassword.length > 100 || newPassword.length > 100) {
+      addToast('Las contraseñas no son válidas o exceden el límite de longitud.', 'error');
+      return false;
+    }
     const hashedCurrent = await hashPassword(currentPassword);
     const found = users.find(u => u.id === user.id && u.password === hashedCurrent);
     if (!found) return false;
@@ -194,7 +208,22 @@ export default function App() {
 
   // ── Agregar alumno + crear cuenta de acceso ──
   const handleAddAlumno = useCallback(async (data) => {
-    const { password, ...alumnoData } = data;
+    if (!data || typeof data !== 'object') {
+      addToast('Datos de alumno inválidos.', 'error');
+      return;
+    }
+    const { password, nombre, apellido, email, fechaNacimiento, cursoId } = data;
+    if (typeof password !== 'string' || password.length > 100 || password.length < 6) {
+      addToast('Contraseña inválida. Mínimo 6 caracteres, máximo 100.', 'error');
+      return;
+    }
+    if ((nombre && (typeof nombre !== 'string' || nombre.length > 100)) ||
+        (apellido && (typeof apellido !== 'string' || apellido.length > 100)) ||
+        (email && (typeof email !== 'string' || email.length > 100))) {
+      addToast('Los campos del alumno no deben exceder los 100 caracteres.', 'error');
+      return;
+    }
+    const alumnoData = { nombre, apellido, email, fechaNacimiento, cursoId };
     const newId = uid();
     setAlumnos(prev => [...prev, { ...alumnoData, id: newId }]);
     const hashedPassword = await hashPassword(password);
