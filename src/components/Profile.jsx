@@ -70,28 +70,28 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
     Alumno: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   };
 
-  const inputCls = "w-full bg-navy-900/60 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30";
+  const inputCls = "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]";
 
   return (
     <div className="max-w-lg space-y-6">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-white">Mi Perfil</h1>
+        <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Mi Perfil</h1>
         <p className="text-slate-400 text-sm mt-1">Gestiona tu información personal</p>
       </div>
 
       {/* Avatar */}
-      <div className="bg-navy-800/60 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-5">
+      <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-2xl p-6 space-y-5">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             {preview
-              ? <img src={preview} alt="avatar" className="w-24 h-24 rounded-full object-cover border-4 border-accent/40 shadow-lg shadow-accent/20" />
-              : <div className="w-24 h-24 rounded-full bg-accent/20 border-4 border-accent/40 flex items-center justify-center text-2xl font-bold text-accent-light font-serif">
+              ? <img src={preview} alt="avatar" className="w-24 h-24 rounded-full object-cover border-4 border-[#00E5FF]/40 shadow-lg shadow-[#00E5FF]/20" />
+              : <div className="w-24 h-24 rounded-full bg-[#0052CC]/20 border-4 border-[#00E5FF]/40 flex items-center justify-center text-2xl font-bold text-[#00E5FF] font-serif">
                   {user.nombre?.[0]}{user.apellido?.[0]}
                 </div>
             }
             <button
               onClick={() => fileRef.current?.click()}
-              className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-accent border-2 border-navy-800 flex items-center justify-center text-white hover:bg-accent-light transition-colors shadow-lg"
+              className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-[#0052CC] border-2 border-[#1C2541] flex items-center justify-center text-[#F4F6F9] hover:brightness-110 transition-colors shadow-lg"
               title="Cambiar foto"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,13 +101,13 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
             </button>
           </div>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
-          <button onClick={() => fileRef.current?.click()} className="text-sm text-accent-light hover:text-white border border-accent/20 hover:border-accent/40 px-4 py-1.5 rounded-lg transition-all">
+          <button onClick={() => fileRef.current?.click()} className="text-sm text-[#00E5FF] hover:text-[#F4F6F9] border border-[#00E5FF]/20 hover:border-[#00E5FF]/40 px-4 py-1.5 rounded-lg transition-all">
             Subir foto de perfil
           </button>
         </div>
 
         {preview && preview !== user.avatar && (
-          <button onClick={handleSaveAvatar} className="w-full py-2.5 bg-accent hover:bg-accent-light text-white rounded-xl text-sm font-medium transition-colors shadow-lg shadow-accent/20">
+          <button onClick={handleSaveAvatar} className="w-full py-2.5 bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] text-[#F4F6F9] rounded-xl text-sm font-medium transition-colors shadow-lg shadow-[#00E5FF]/20">
             Guardar foto de perfil
           </button>
         )}
@@ -116,12 +116,12 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
       </div>
 
       {/* Datos personales */}
-      <div className="bg-navy-800/60 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4">
+      <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-white font-semibold text-sm">Datos personales</h2>
+          <h2 className="text-[#F4F6F9] font-semibold text-sm">Datos personales</h2>
           {!editMode && (
             <button onClick={() => { setEditMode(true); setProfileError(''); setProfileFields({ nombre: user.nombre, apellido: user.apellido, email: user.email }); }}
-              className="text-xs text-accent-light hover:text-white border border-accent/20 hover:border-accent/40 px-3 py-1 rounded-lg transition-all">
+              className="text-xs text-[#00E5FF] hover:text-[#F4F6F9] border border-[#00E5FF]/20 hover:border-[#00E5FF]/40 px-3 py-1 rounded-lg transition-all">
               Editar
             </button>
           )}
@@ -143,10 +143,10 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
             </div>
             {profileError && <p className="text-red-400 text-xs">{profileError}</p>}
             <div className="flex gap-2 pt-1">
-              <button onClick={handleSaveProfile} className="flex-1 py-2 bg-accent hover:bg-accent-light text-white rounded-lg text-sm font-medium transition-colors">
+              <button onClick={handleSaveProfile} className="flex-1 py-2 bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] text-[#F4F6F9] rounded-lg text-sm font-medium transition-colors">
                 Guardar cambios
               </button>
-              <button onClick={() => { setEditMode(false); setProfileError(''); }} className="flex-1 py-2 border border-white/10 hover:border-white/20 text-slate-300 rounded-lg text-sm transition-colors">
+              <button onClick={() => { setEditMode(false); setProfileError(''); }} className="flex-1 py-2 border border-[#E2E8F0]/20 hover:border-white/20 text-slate-300 rounded-lg text-sm transition-colors">
                 Cancelar
               </button>
             </div>
@@ -174,12 +174,12 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
       </div>
 
       {/* Cambiar contraseña */}
-      <div className="bg-navy-800/60 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4">
+      <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-white font-semibold text-sm">Contraseña</h2>
+          <h2 className="text-[#F4F6F9] font-semibold text-sm">Contraseña</h2>
           {!pwMode && (
             <button onClick={() => { setPwMode(true); setPwError(''); setPwSuccess(false); setPwFields({ current: '', nuevo: '', confirmar: '' }); }}
-              className="text-xs text-accent-light hover:text-white border border-accent/20 hover:border-accent/40 px-3 py-1 rounded-lg transition-all">
+              className="text-xs text-[#00E5FF] hover:text-[#F4F6F9] border border-[#00E5FF]/20 hover:border-[#00E5FF]/40 px-3 py-1 rounded-lg transition-all">
               Cambiar
             </button>
           )}
@@ -201,10 +201,10 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
             </div>
             {pwError && <p className="text-red-400 text-xs">{pwError}</p>}
             <div className="flex gap-2 pt-1">
-              <button onClick={handleSavePassword} className="flex-1 py-2 bg-accent hover:bg-accent-light text-white rounded-lg text-sm font-medium transition-colors">
+              <button onClick={handleSavePassword} className="flex-1 py-2 bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] text-[#F4F6F9] rounded-lg text-sm font-medium transition-colors">
                 Actualizar contraseña
               </button>
-              <button onClick={() => { setPwMode(false); setPwError(''); }} className="flex-1 py-2 border border-white/10 hover:border-white/20 text-slate-300 rounded-lg text-sm transition-colors">
+              <button onClick={() => { setPwMode(false); setPwError(''); }} className="flex-1 py-2 border border-[#E2E8F0]/20 hover:border-white/20 text-slate-300 rounded-lg text-sm transition-colors">
                 Cancelar
               </button>
             </div>

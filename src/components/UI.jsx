@@ -5,9 +5,9 @@ export const Avatar = React.memo(function Avatar({ user, size = 'md' }) {
   const sizes = { sm: 'w-8 h-8 text-xs', md: 'w-10 h-10 text-sm', lg: 'w-16 h-16 text-xl' };
   const initials = user ? `${user.nombre?.[0] ?? ''}${user.apellido?.[0] ?? ''}`.toUpperCase() : '?';
   return user?.avatar
-    ? <img src={user.avatar} alt="avatar" className={`${sizes[size]} rounded-full object-cover border-2 border-accent/40`} />
+    ? <img src={user.avatar} alt="avatar" className={`${sizes[size]} rounded-full object-cover border-2 border-[#00E5FF]/40`} />
     : (
-      <div className={`${sizes[size]} rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center font-semibold text-accent-light`}>
+      <div className={`${sizes[size]} rounded-full bg-[#0052CC]/20 border-2 border-[#00E5FF]/40 flex items-center justify-center font-semibold text-[#00E5FF]`}>
         {initials}
       </div>
     );
@@ -22,10 +22,10 @@ export const Toast = React.memo(function Toast({ toasts, removeToast }) {
           key={t.id}
           role="alert"
           onClick={() => removeToast(t.id)}
-          className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-sm font-medium cursor-pointer animate-toast-in backdrop-blur-md
+          className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] border text-sm font-medium cursor-pointer animate-toast-in backdrop-blur-md
             ${t.type === 'success' ? 'bg-emerald-900/80 border-emerald-500/30 text-emerald-300' :
               t.type === 'error' ? 'bg-red-900/80 border-red-500/30 text-red-300' :
-              'bg-navy-800 border-white/10 text-slate-300'}`}
+              'bg-[#1C2541]/80 border-[#E2E8F0]/20 text-slate-300'}`}
         >
           {t.type === 'success' && <span className="text-emerald-400">✓</span>}
           {t.type === 'error' && <span className="text-red-400">✗</span>}
@@ -45,11 +45,11 @@ export function Modal({ title, children, onClose }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm z-40 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-navy-800/90 border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col animate-slide-in">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-          <h3 className="font-serif text-lg font-semibold text-white">{title}</h3>
-          <button onClick={onClose} aria-label="Cerrar modal" title="Cerrar" className="text-slate-500 hover:text-white transition-colors">
+    <div className="fixed inset-0 bg-[#0B132B] backdrop-blur-sm z-40 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] w-full max-w-lg max-h-[90vh] flex flex-col animate-slide-in">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]/20">
+          <h3 className="font-serif text-lg font-semibold text-[#F4F6F9]">{title}</h3>
+          <button onClick={onClose} aria-label="Cerrar modal" title="Cerrar" className="text-slate-500 hover:text-[#F4F6F9] transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -62,18 +62,18 @@ export function Modal({ title, children, onClose }) {
 /* ─── Confirm Dialog ─────────────────────────────── */
 export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConfirm, onCancel }) {
   return (
-    <div className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-navy-800 border border-white/10 rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-slide-in">
+    <div className="fixed inset-0 bg-[#0B132B] backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] w-full max-w-sm p-6 animate-slide-in">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
             <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
           </div>
-          <h3 className="font-serif text-lg font-semibold text-white">Confirmar acción</h3>
+          <h3 className="font-serif text-lg font-semibold text-[#F4F6F9]">Confirmar acción</h3>
         </div>
         <p className="text-slate-300 text-sm mb-6">{message}</p>
         <div className="flex gap-3 justify-end">
-          <button onClick={onCancel} className="px-4 py-2 text-sm text-slate-400 hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-all">Cancelar</button>
-          <button onClick={onConfirm} className="px-4 py-2 text-sm bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors font-medium">Eliminar</button>
+          <button onClick={onCancel} className="px-4 py-2 text-sm text-slate-400 hover:text-[#F4F6F9] border border-[#E2E8F0]/20 hover:border-white/20 rounded-lg transition-all">Cancelar</button>
+          <button onClick={onConfirm} className="px-4 py-2 text-sm bg-red-600 hover:bg-red-500 text-[#F4F6F9] rounded-lg transition-colors font-medium">Eliminar</button>
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConf
 
 /* ─── Form Field ─────────────────────────────────── */
 export const Field = React.memo(function Field({ label, id, type = 'text', value, onChange, options, required, placeholder }) {
-  const base = "w-full bg-navy-900/60 border border-white/10 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all text-sm";
+  const base = "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-sm";
   
   // Sanitización de inputs (ISO 38500 - Principio 5 Conformidad)
   const handleSanitizedChange = (e) => {
@@ -99,7 +99,7 @@ export const Field = React.memo(function Field({ label, id, type = 'text', value
       {type === 'select'
         ? <select id={id} value={value} onChange={handleSanitizedChange} required={required} className={base}>
             <option value="">— Seleccionar —</option>
-            {options?.map(o => <option key={o.value} value={o.value} className="bg-navy-900">{o.label}</option>)}
+            {options?.map(o => <option key={o.value} value={o.value} className="bg-[#0B132B]">{o.label}</option>)}
           </select>
         : <input id={id} type={type} value={value} onChange={handleSanitizedChange} required={required} placeholder={placeholder}
             className={base} />
@@ -111,14 +111,14 @@ export const Field = React.memo(function Field({ label, id, type = 'text', value
 /* ─── Select (standalone dropdown control) ──────── */
 export function Select({ label, value, onChange, options, placeholder = '— Todos —', compact = false }) {
   const base = compact
-    ? "bg-navy-900/60 border border-white/10 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all text-xs min-w-[140px]"
-    : "w-full bg-navy-900/60 border border-white/10 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-all text-sm";
+    ? "bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-xs min-w-[140px]"
+    : "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-sm";
   return (
     <div className="flex flex-col gap-1">
       {label && <label className="text-[10px] uppercase tracking-wider text-slate-500 font-medium">{label}</label>}
       <select value={value ?? ''} onChange={e => onChange(e.target.value)} className={base}>
-        <option value="" className="bg-navy-900">{placeholder}</option>
-        {options.map(o => <option key={o.value} value={o.value} className="bg-navy-900">{o.label}</option>)}
+        <option value="" className="bg-[#0B132B]">{placeholder}</option>
+        {options.map(o => <option key={o.value} value={o.value} className="bg-[#0B132B]">{o.label}</option>)}
       </select>
     </div>
   );
@@ -128,7 +128,7 @@ export function Select({ label, value, onChange, options, placeholder = '— Tod
 export function FilterBar({ filters, values, onChange, onReset }) {
   const hasActive = Object.values(values).some(v => v !== '' && v != null);
   return (
-    <div className="flex flex-wrap items-end gap-3 bg-navy-900/40 border border-white/5 rounded-xl p-3">
+    <div className="flex flex-wrap items-end gap-3 bg-[#0B132B] border border-[#E2E8F0]/10 rounded-xl p-3">
       <div className="flex items-center gap-2 text-xs text-slate-500 uppercase tracking-wider pr-2">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -149,7 +149,7 @@ export function FilterBar({ filters, values, onChange, onReset }) {
       {hasActive && (
         <button
           onClick={onReset}
-          className="text-xs px-3 py-1.5 text-slate-400 hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-all"
+          className="text-xs px-3 py-1.5 text-slate-400 hover:text-[#F4F6F9] border border-[#E2E8F0]/20 hover:border-white/20 rounded-lg transition-all"
         >
           Limpiar filtros
         </button>
@@ -215,7 +215,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
 
   const sortIcon = (key) => {
     if (sort.key !== key) return <span className="text-slate-700">↕</span>;
-    return sort.dir === 'asc' ? <span className="text-accent-light">↑</span> : <span className="text-accent-light">↓</span>;
+    return sort.dir === 'asc' ? <span className="text-[#00E5FF]">↑</span> : <span className="text-[#00E5FF]">↓</span>;
   };
 
   return (
@@ -229,7 +229,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar..."
-              className="w-full sm:w-80 bg-navy-800/60 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-accent/60 text-sm"
+              className="w-full sm:w-80 bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-lg pl-9 pr-4 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#00E5FF] text-sm"
             />
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -237,7 +237,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
             <select
               value={perPage}
               onChange={e => setPerPage(Number(e.target.value))}
-              className="bg-navy-800/60 border border-white/10 rounded-md px-2 py-1 text-slate-200 focus:outline-none focus:border-accent/60 text-xs"
+              className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-md px-2 py-1 text-slate-200 focus:outline-none focus:border-[#00E5FF] text-xs"
             >
               {[10, 25, 50, 100].map(n => <option key={n} value={n}>{n}</option>)}
             </select>
@@ -246,15 +246,15 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-xl border border-white/10">
+      <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]/20">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-navy-800/80 border-b border-white/10">
+            <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
               {columns.map(c => (
                 <th
                   key={c.key}
                   onClick={() => c.sortable !== false && toggleSort(c.key)}
-                  className={`px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider whitespace-nowrap select-none ${c.sortable === false ? '' : 'cursor-pointer hover:text-white transition-colors'}`}
+                  className={`px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider whitespace-nowrap select-none ${c.sortable === false ? '' : 'cursor-pointer hover:text-[#F4F6F9] transition-colors'}`}
                 >
                   <span className="inline-flex items-center gap-1.5">
                     {c.label}
@@ -284,7 +284,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
                         {onEdit && (
-                          <button onClick={() => onEdit(row)} className="text-xs px-3 py-1.5 bg-accent/10 hover:bg-accent/20 text-accent-light border border-accent/20 rounded-lg transition-all">
+                          <button onClick={() => onEdit(row)} className="text-xs px-3 py-1.5 bg-[#0052CC]/10 hover:bg-[#0052CC]/20 text-[#00E5FF] border border-[#00E5FF]/20 rounded-lg transition-all">
                             Editar
                           </button>
                         )}
@@ -318,7 +318,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
               disabled={safePage === 1}
               aria-label="Página anterior"
               title="Página anterior"
-              className="px-2.5 py-1 text-xs border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="px-2.5 py-1 text-xs border border-[#E2E8F0]/20 rounded-lg text-slate-400 hover:text-[#F4F6F9] hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               ←
             </button>
@@ -328,7 +328,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
               disabled={safePage === totalPages}
               aria-label="Página siguiente"
               title="Página siguiente"
-              className="px-2.5 py-1 text-xs border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="px-2.5 py-1 text-xs border border-[#E2E8F0]/20 rounded-lg text-slate-400 hover:text-[#F4F6F9] hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               →
             </button>
@@ -342,7 +342,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
 /* ─── Stat Card ──────────────────────────────────── */
 export const StatCard = React.memo(function StatCard({ label, value, icon, color = 'accent', hint }) {
   const colors = {
-    accent: 'bg-accent/10 border-accent/20 text-accent-light',
+    accent: 'bg-[#0052CC]/10 border-[#00E5FF]/20 text-[#00E5FF]',
     gold: 'bg-gold/10 border-gold/20 text-gold',
     emerald: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
     violet: 'bg-violet-500/10 border-violet-500/20 text-violet-400',
@@ -350,11 +350,11 @@ export const StatCard = React.memo(function StatCard({ label, value, icon, color
     sky: 'bg-sky-500/10 border-sky-500/20 text-sky-400',
   };
   return (
-    <div className="bg-navy-800/60 backdrop-blur-sm border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all">
+    <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-2xl p-5 hover:border-white/20 transition-all">
       <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${colors[color]}`}>
         <span className="text-xl">{icon}</span>
       </div>
-      <div className="text-3xl font-bold text-white font-serif mb-1">{value}</div>
+      <div className="text-3xl font-bold text-[#F4F6F9] font-serif mb-1">{value}</div>
       <div className="text-sm text-slate-400">{label}</div>
       {hint && <div className="text-[10px] text-slate-500 uppercase tracking-wider mt-1.5">{hint}</div>}
     </div>
@@ -371,10 +371,10 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
   }, [rows, cols]);
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-white/10 animate-pulse">
+    <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]/20 animate-pulse">
       <table className="w-full">
         <thead>
-          <tr className="bg-navy-800/80 border-b border-white/10">
+          <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
             {Array.from({ length: cols }).map((_, i) => (
               <th key={i} className="px-4 py-3"><div className="h-3 bg-white/5 rounded w-20" /></th>
             ))}
@@ -404,13 +404,13 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
 export function Collapsible({ title, icon, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-navy-800/50 border border-white/10 rounded-2xl overflow-hidden">
+    <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl overflow-hidden">
       <button
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors"
       >
-        <span className="flex items-center gap-3 text-white font-serif font-semibold text-base">
+        <span className="flex items-center gap-3 text-[#F4F6F9] font-serif font-semibold text-base">
           {icon && <span className="text-lg">{icon}</span>}
           {title}
         </span>
@@ -426,7 +426,7 @@ export function Collapsible({ title, icon, children, defaultOpen = true }) {
 /* ─── Tabs ───────────────────────────────────────── */
 export function Tabs({ tabs, active, onChange }) {
   return (
-    <div className="border-b border-white/10">
+    <div className="border-b border-[#E2E8F0]/20">
       <div className="flex gap-1 overflow-x-auto">
         {tabs.map(t => (
           <button
@@ -434,7 +434,7 @@ export function Tabs({ tabs, active, onChange }) {
             onClick={() => onChange(t.id)}
             className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-all
               ${active === t.id
-                ? 'text-accent-light border-accent'
+                ? 'text-[#00E5FF] border-[#00E5FF]'
                 : 'text-slate-500 hover:text-slate-300 border-transparent'}`}
           >
             {t.icon && <span className="mr-2">{t.icon}</span>}
@@ -490,7 +490,7 @@ export function DropdownMenu({ trigger, items, align = 'right' }) {
         {trigger}
       </button>
       {open && (
-        <div className={`absolute z-30 mt-2 min-w-[180px] bg-navy-800 border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-fade-in ${align === 'right' ? 'right-0' : 'left-0'}`}>
+        <div className={`absolute z-30 mt-2 min-w-[180px] bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] overflow-hidden animate-fade-in ${align === 'right' ? 'right-0' : 'left-0'}`}>
           {items.map((it, i) => (
             <button
               key={i}
