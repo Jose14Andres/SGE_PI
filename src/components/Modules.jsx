@@ -70,7 +70,7 @@ function CrudModule({
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-white">{title}</h1>
+          <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">{title}</h1>
           <p className="text-slate-400 text-sm mt-1">
             {filteredData.length} de {data.length} registro{data.length !== 1 ? 's' : ''}
             {hint && <span className="text-slate-500"> · {hint}</span>}
@@ -78,7 +78,7 @@ function CrudModule({
         </div>
         {!readonly && (
           <button id={`btn-add-${title.replace(/\s/g, '')}`} onClick={openAdd}
-            className="flex items-center gap-2 bg-accent hover:bg-accent-light px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors shadow-lg shadow-accent/20">
+            className="flex items-center gap-2 bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] px-4 py-2 rounded-xl text-sm font-medium text-[#F4F6F9] transition-colors shadow-lg shadow-[#00E5FF]/20">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
             Agregar
           </button>
@@ -118,8 +118,8 @@ function CrudModule({
               </div>
             ))}
             <div className="flex gap-3 justify-end pt-2">
-              <button type="button" onClick={closeModal} className="px-4 py-2 text-sm text-slate-400 hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-all">Cancelar</button>
-              <button type="submit" className="px-5 py-2 text-sm bg-accent hover:bg-accent-light text-white rounded-lg transition-colors font-medium">
+              <button type="button" onClick={closeModal} className="px-4 py-2 text-sm text-slate-400 hover:text-[#F4F6F9] border border-[#E2E8F0]/20 hover:border-white/20 rounded-lg transition-all">Cancelar</button>
+              <button type="submit" className="px-5 py-2 text-sm bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] text-[#F4F6F9] rounded-lg transition-colors font-medium">
                 {editingItem ? 'Guardar cambios' : 'Agregar'}
               </button>
             </div>
