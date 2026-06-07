@@ -246,7 +246,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]/20">
+      <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]/20">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
@@ -371,7 +371,7 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
   }, [rows, cols]);
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]/20 animate-pulse">
+    <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]/20 animate-pulse">
       <table className="w-full">
         <thead>
           <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
