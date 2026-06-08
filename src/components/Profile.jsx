@@ -131,15 +131,15 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
           <div className="space-y-3">
             <div>
               <label className="text-xs text-slate-400 mb-1 block">Nombre</label>
-              <input className={inputCls} value={profileFields.nombre} onChange={e => setProfileFields(p => ({ ...p, nombre: e.target.value }))} />
+              <input className={inputCls} value={profileFields.nombre} onChange={e => setProfileFields(p => ({ ...p, nombre: e.target.value }))} maxLength={100} />
             </div>
             <div>
               <label className="text-xs text-slate-400 mb-1 block">Apellido</label>
-              <input className={inputCls} value={profileFields.apellido} onChange={e => setProfileFields(p => ({ ...p, apellido: e.target.value }))} />
+              <input className={inputCls} value={profileFields.apellido} onChange={e => setProfileFields(p => ({ ...p, apellido: e.target.value }))} maxLength={100} />
             </div>
             <div>
               <label className="text-xs text-slate-400 mb-1 block">Email</label>
-              <input className={inputCls} type="email" value={profileFields.email} onChange={e => setProfileFields(p => ({ ...p, email: e.target.value }))} />
+              <input className={inputCls} type="email" value={profileFields.email} onChange={e => setProfileFields(p => ({ ...p, email: e.target.value }))} maxLength={100} />
             </div>
             {profileError && <p className="text-red-400 text-xs">{profileError}</p>}
             <div className="flex gap-2 pt-1">
@@ -189,15 +189,15 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
           <div className="space-y-3">
             <div>
               <label className="text-xs text-slate-400 mb-1 block">Contraseña actual</label>
-              <input className={inputCls} type="password" placeholder="••••••••" value={pwFields.current} onChange={e => setPwFields(p => ({ ...p, current: e.target.value }))} />
+              <input className={inputCls} type="password" placeholder="••••••••" value={pwFields.current} onChange={e => setPwFields(p => ({ ...p, current: e.target.value }))} maxLength={100} />
             </div>
             <div>
               <label className="text-xs text-slate-400 mb-1 block">Nueva contraseña</label>
-              <input className={inputCls} type="password" placeholder="Mínimo 6 caracteres" value={pwFields.nuevo} onChange={e => setPwFields(p => ({ ...p, nuevo: e.target.value }))} />
+              <input className={inputCls} type="password" placeholder="Mínimo 6 caracteres" value={pwFields.nuevo} onChange={e => setPwFields(p => ({ ...p, nuevo: e.target.value }))} maxLength={100} />
             </div>
             <div>
               <label className="text-xs text-slate-400 mb-1 block">Confirmar nueva contraseña</label>
-              <input className={inputCls} type="password" placeholder="Repite la nueva contraseña" value={pwFields.confirmar} onChange={e => setPwFields(p => ({ ...p, confirmar: e.target.value }))} />
+              <input className={inputCls} type="password" placeholder="Repite la nueva contraseña" value={pwFields.confirmar} onChange={e => setPwFields(p => ({ ...p, confirmar: e.target.value }))} maxLength={100} />
             </div>
             {pwError && <p className="text-red-400 text-xs">{pwError}</p>}
             <div className="flex gap-2 pt-1">

@@ -113,6 +113,7 @@ function CrudModule({
                   options={f.options}
                   required={f.required}
                   placeholder={f.placeholder}
+                  maxLength={f.maxLength}
                 />
                 {errors[f.key] && <p className="text-red-400 text-xs mt-1">{errors[f.key]}</p>}
               </div>
@@ -164,12 +165,12 @@ export function AlumnosModule({ alumnos, cursos, onAdd, onEdit, onDelete, loadin
   ];
 
   const formFields = [
-    { key: 'nombre',          label: 'Nombre',              required: true,  placeholder: 'ej. Lucía' },
-    { key: 'apellido',        label: 'Apellido',            required: true,  placeholder: 'ej. Torres' },
-    { key: 'email',           label: 'Email',               type: 'email',   required: true, placeholder: 'lucia@sge.edu' },
+    { key: 'nombre',          label: 'Nombre',              required: true,  placeholder: 'ej. Lucía', maxLength: 100 },
+    { key: 'apellido',        label: 'Apellido',            required: true,  placeholder: 'ej. Torres', maxLength: 100 },
+    { key: 'email',           label: 'Email',               type: 'email',   required: true, placeholder: 'lucia@sge.edu', maxLength: 100 },
     { key: 'fechaNacimiento', label: 'Fecha de Nacimiento', type: 'date',    required: true },
     { key: 'cursoId',         label: 'Sección Asignada',    type: 'select',  required: true, options: cursos.map(c => ({ value: c.id, label: c.nombre })) },
-    { key: 'password',        label: 'Contraseña de Acceso', type: 'password', required: true, placeholder: 'Contraseña para el alumno', onlyOnAdd: true },
+    { key: 'password',        label: 'Contraseña de Acceso', type: 'password', required: true, placeholder: 'Contraseña para el alumno', onlyOnAdd: true, maxLength: 100 },
   ];
 
   const carrerasOpts = uniq(cursos.map(c => c.carrera)).map(asOpt);
@@ -208,10 +209,10 @@ export function ProfesoresModule({ profesores, onAdd, onEdit, onDelete, loading,
     { key: 'especialidad', label: 'Especialidad' },
   ];
   const formFields = [
-    { key: 'nombre',       label: 'Nombre',       required: true },
-    { key: 'apellido',     label: 'Apellido',     required: true },
-    { key: 'email',        label: 'Email',        type: 'email', required: true },
-    { key: 'especialidad', label: 'Especialidad', required: true, placeholder: 'ej. Matemáticas' },
+    { key: 'nombre',       label: 'Nombre',       required: true, maxLength: 100 },
+    { key: 'apellido',     label: 'Apellido',     required: true, maxLength: 100 },
+    { key: 'email',        label: 'Email',        type: 'email', required: true, maxLength: 100 },
+    { key: 'especialidad', label: 'Especialidad', required: true, placeholder: 'ej. Matemáticas', maxLength: 100 },
   ];
 
   const especialidadesOpts = uniq(profesores.map(p => p.especialidad)).map(asOpt);
@@ -246,9 +247,9 @@ export function CursosModule({ cursos, onAdd, onEdit, onDelete, loading, readonl
   ];
   const formFields = [
     { key: 'carrera',     label: 'Carrera',         type: 'select', required: true, options: CARRERAS_OPTIONS },
-    { key: 'nivel',       label: 'Nivel',           required: true, placeholder: 'ej. 1er Nivel' },
-    { key: 'paralelo',    label: 'Sección',         required: true, placeholder: 'ej. A' },
-    { key: 'anioLectivo', label: 'Período Lectivo', required: true, placeholder: 'ej. 2024-2025' },
+    { key: 'nivel',       label: 'Nivel',           required: true, placeholder: 'ej. 1er Nivel', maxLength: 100 },
+    { key: 'paralelo',    label: 'Sección',         required: true, placeholder: 'ej. A', maxLength: 50 },
+    { key: 'anioLectivo', label: 'Período Lectivo', required: true, placeholder: 'ej. 2024-2025', maxLength: 50 },
   ];
 
   const carrerasOpts  = uniq(cursos.map(c => c.carrera)).map(asOpt);
@@ -302,9 +303,9 @@ export function MateriasModule({ materias, profesores, cursos, onAdd, onEdit, on
   ];
 
   const formFields = [
-    { key: 'nombre',     label: 'Nombre de la Materia', required: true },
-    { key: 'codigo',     label: 'Código',        required: true, placeholder: 'ej. ING-CAL1' },
-    { key: 'creditos',   label: 'Créditos',      type: 'number', required: true },
+    { key: 'nombre',     label: 'Nombre de la Materia', required: true, maxLength: 100 },
+    { key: 'codigo',     label: 'Código',        required: true, placeholder: 'ej. ING-CAL1', maxLength: 50 },
+    { key: 'creditos',   label: 'Créditos',      type: 'number', required: true, maxLength: 3 },
     { key: 'profesorId', label: 'Profesor Asignado', type: 'select', required: true, options: profesores.map(p => ({ value: p.id, label: `${p.nombre} ${p.apellido}` })) },
     { key: 'cursoId',    label: 'Sección Asignada',  type: 'select', required: true, options: cursos.map(c => ({ value: c.id, label: c.nombre })) },
   ];

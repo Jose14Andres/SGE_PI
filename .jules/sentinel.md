@@ -55,3 +55,8 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** A syntax error within the failed attempts counter bypassed the UI lockout mechanism.
 **Learning:** The `setAttempts` undefined variable error caused an implicit bypass/fail-open of the application's rate-limiting.
 **Prevention:** Ensure strict linting is passed and components are properly tested for edge cases.
+
+## 2024-06-05 - [Missing Input Length Limits]
+**Vulnerability:** User-provided inputs in forms (such as `Profile.jsx` and CRUD modules) were not constrained by `maxLength` attributes in the UI layer. This allowed potential client-side DoS (Denial of Service) attacks or application slowdowns where massive strings could be pasted into fields, consuming excessive memory and CPU resources, particularly during validation and controlled component re-renders.
+**Learning:** Client-side forms should enforce explicit maximum length limits on input fields (`maxLength="..."`) to protect against basic resource-exhaustion attacks, ensuring stability even before input reaches the server validation.
+**Prevention:** Always define and apply logical `maxLength` restrictions to text/number and password inputs across UI components to reject abusively large input payloads at the browser level.

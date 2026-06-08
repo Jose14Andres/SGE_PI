@@ -81,7 +81,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConf
 });
 
 /* ─── Form Field ─────────────────────────────────── */
-export const Field = React.memo(function Field({ label, id, type = 'text', value, onChange, options, required, placeholder }) {
+export const Field = React.memo(function Field({ label, id, type = 'text', value, onChange, options, required, placeholder, maxLength }) {
   const base = "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-sm";
   
   // Sanitización de inputs (ISO 38500 - Principio 5 Conformidad)
@@ -101,7 +101,7 @@ export const Field = React.memo(function Field({ label, id, type = 'text', value
             <option value="">— Seleccionar —</option>
             {options?.map(o => <option key={o.value} value={o.value} className="bg-[#0B132B]">{o.label}</option>)}
           </select>
-        : <input id={id} type={type} value={value} onChange={handleSanitizedChange} required={required} placeholder={placeholder}
+        : <input id={id} type={type} value={value} onChange={handleSanitizedChange} required={required} placeholder={placeholder} maxLength={maxLength}
             className={base} />
       }
     </div>
