@@ -192,7 +192,7 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
             const count = alumnosByCurso[c.id] || 0;
             const mats  = materiasByCurso[c.id] || 0;
             return (
-              <div key={c.id} className="bg-[#0B132B] border border-[#E2E8F0]/10 rounded-xl p-3 hover:border-[#E2E8F0]/20 transition-all">
+              <div key={c.id} className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-xl p-3 hover:border-[#00E5FF]/40 transition-all">
                 <div className="text-sm text-[#F4F6F9] font-medium">{c.carrera}</div>
                 <div className="text-xs text-slate-400 mt-0.5">{c.nivel} · Sección {c.paralelo}</div>
                 <div className="flex gap-2 mt-2">
@@ -275,7 +275,7 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
       {/* Cuerpo Principal */}
       <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
 
-      <div className="bg-[#0B132B] border border-[#E2E8F0]/10 rounded-xl p-3 flex flex-wrap items-end gap-3">
+      <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-xl p-3 flex flex-wrap items-end gap-3">
         <div className="text-xs text-slate-500 uppercase tracking-wider pr-2 flex items-center gap-2">
           <span>📚</span> Seleccionar Materia
         </div>
@@ -650,7 +650,7 @@ export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
           No tienes materias asignadas — el horario aparecerá cuando estés inscrito en una sección con materias.
         </div>
       ) : view === 'semanal' ? (
-        <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]/20">
+        <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]/20">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
