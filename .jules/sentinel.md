@@ -64,3 +64,13 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** The cryptographic utility `signSession` used a hardcoded, static plaintext secret (`MOCK_SESSION_SECRET = 'sge_secure_session_secret_2024'`) to sign the mock backend's sessions. An attacker inspecting the frontend bundle could extract this key to forge valid session signatures (Tampering), escalating privileges via local storage modification.
 **Learning:** Hardcoding static cryptographic keys within frontend bundles defeats the purpose of HMACs, as the keys are fully visible to end users.
 **Prevention:** In mock or single-lifecycle frontend environments that enforce session integrity, keys should be generated dynamically at runtime (`window.crypto.getRandomValues`) or bound strictly to server-provided environment variables, never hardcoded in plaintext.
+
+## 2025-02-23 - [Preventing Information Disclosure in Authentication]
+**Vulnerability:** The application originally provided specific error messages during authentication and password changes (e.g., 'La contraseña actual es incorrecta.'), which could allow an attacker to enumerate valid usernames or discern the exact reason for failure. Additionally, uncaught errors in async operations could potentially leak system traces to the UI.
+**Learning:** To mitigate Information Disclosure, all authentication-related error messages must be generic, and raw system exceptions should be masked safely.
+**Prevention:** Always use generic failure messages like 'Credenciales incorrectas o rol no válido.' and wrap asynchronous operations in  blocks to swallow underlying errors before they reach the user interface.
+
+## 2025-02-23 - [Preventing Information Disclosure in Authentication]
+**Vulnerability:** The application originally provided specific error messages during authentication and password changes (e.g., 'La contraseña actual es incorrecta.'), which could allow an attacker to enumerate valid usernames or discern the exact reason for failure. Additionally, uncaught errors in async operations could potentially leak system traces to the UI.
+**Learning:** To mitigate Information Disclosure, all authentication-related error messages must be generic, and raw system exceptions should be masked safely.
+**Prevention:** Always use generic failure messages like 'Credenciales incorrectas o rol no válido.' and wrap asynchronous operations in `try...catch` blocks to swallow underlying errors before they reach the user interface.
