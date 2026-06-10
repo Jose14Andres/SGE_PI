@@ -102,17 +102,10 @@ export default function App() {
     if (foundUser.role !== role) return false;
 
     const hashedPassword = await hashPassword(password);
-    const authenticatedUser = users.find(u => u.email === email && u.password === hashedPassword && u.role === role);
-
-    if (!authenticatedUser) return false;
-
-    // Attach profesorId link
-    let prof = profesores.find(p => p.email === authenticatedUser.email);
-    setUser({ ...authenticatedUser, profesorId: prof?.id ?? null });
     if (foundUser.password !== hashedPassword) return false;
 
     // Attach profesorId link
-    prof = profesores.find(p => p.email === foundUser.email);
+    const prof = profesores.find(p => p.email === foundUser.email);
     const sessionUser = { ...foundUser, profesorId: prof?.id ?? null };
     setUser(sessionUser);
 
@@ -179,17 +172,22 @@ export default function App() {
   }, [user, addToast]);
 
   const handleChangePassword = useCallback(async (currentPassword, newPassword) => {
-    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' || currentPassword.length > 100 || newPassword.length > 100) {
-      addToast('Las contraseñas no son válidas o exceden el límite de longitud.', 'error');
+    try {
+      if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' || currentPassword.length > 100 || newPassword.length > 100) {
+        addToast('Las contraseñas no son válidas o exceden el límite de longitud.', 'error');
+        return false;
+      }
+      const hashedCurrent = await hashPassword(currentPassword);
+      const found = users.find(u => u.id === user.id && u.password === hashedCurrent);
+      if (!found) return false;
+      const hashedNew = await hashPassword(newPassword);
+      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, password: hashedNew } : u));
+      addToast('Contraseña actualizada correctamente');
+      return true;
+    } catch {
+      addToast('La operación falló, verifique sus datos.', 'error');
       return false;
     }
-    const hashedCurrent = await hashPassword(currentPassword);
-    const found = users.find(u => u.id === user.id && u.password === hashedCurrent);
-    if (!found) return false;
-    const hashedNew = await hashPassword(newPassword);
-    setUsers(prev => prev.map(u => u.id === user.id ? { ...u, password: hashedNew } : u));
-    addToast('Contraseña actualizada correctamente');
-    return true;
   }, [user, users, addToast]);
 
   // ── CRUD helpers ──

@@ -55,12 +55,16 @@ export default function Profile({ user, onUpdateAvatar, onUpdateProfile, onChang
     if (!current || !nuevo || !confirmar) { setPwError('Completa todos los campos.'); return; }
     if (nuevo.length < 6) { setPwError('La nueva contraseña debe tener al menos 6 caracteres.'); return; }
     if (nuevo !== confirmar) { setPwError('Las contraseñas nuevas no coinciden.'); return; }
-    const ok = await onChangePassword(current, nuevo);
-    if (!ok) { setPwError('La contraseña actual es incorrecta.'); return; }
-    setPwError('');
-    setPwSuccess(true);
-    setPwFields({ current: '', nuevo: '', confirmar: '' });
-    setPwMode(false);
+    try {
+      const ok = await onChangePassword(current, nuevo);
+      if (!ok) { setPwError('Credenciales incorrectas o rol no válido.'); return; }
+      setPwError('');
+      setPwSuccess(true);
+      setPwFields({ current: '', nuevo: '', confirmar: '' });
+      setPwMode(false);
+    } catch {
+      setPwError('Credenciales incorrectas o rol no válido.');
+    }
   };
 
   const ROLE_BADGE = {

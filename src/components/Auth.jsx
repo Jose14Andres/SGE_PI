@@ -80,22 +80,27 @@ export default function Auth({ onLogin }) {
     if (!email || !password) { setError('Por favor complete todos los campos.'); return; }
     if (email.length > 100 || password.length > 100) { setError('Entrada demasiado larga.'); return; }
 
-    const result = await onLogin(email, password, role);
-    if (!result) {
-      const newAttempts = failedAttempts + 1;
-      setFailedAttempts(newAttempts);
+    try {
+      const result = await onLogin(email, password, role);
+      if (!result) {
+        const newAttempts = failedAttempts + 1;
+        setFailedAttempts(newAttempts);
 
-      if (newAttempts >= 5) {
-        setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
-        setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
+        if (newAttempts >= 5) {
+          setLockoutUntil(Date.now() + 30000); // 30 segundos de bloqueo
+          setError('Demasiados intentos fallidos. Cuenta bloqueada temporalmente.');
+        } else {
+          setError('Credenciales incorrectas o rol no válido.');
+        }
+        setPassword(''); // Seguridad: limpiar input password en error
       } else {
-        setError('Credenciales incorrectas o rol no coincide.');
+        setFailedAttempts(0);
+        // Reset on success
+        setLockoutUntil(null);
       }
-      setPassword(''); // Seguridad: limpiar input password en error
-    } else {
-      setFailedAttempts(0);
-      // Reset on success
-      setLockoutUntil(null);
+    } catch {
+      setError('Ocurrió un error inesperado al iniciar sesión.');
+      setPassword('');
     }
   };
 
