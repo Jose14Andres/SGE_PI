@@ -84,13 +84,9 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConf
 export const Field = React.memo(function Field({ label, id, type = 'text', value, onChange, options, required, placeholder, maxLength }) {
   const base = "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-sm";
   
-  // Sanitización de inputs (ISO 38500 - Principio 5 Conformidad)
+  // Sanitización delegada al motor de renderizado de React.
   const handleSanitizedChange = (e) => {
-    let val = e.target.value;
-    if (type !== 'password' && typeof val === 'string') {
-      val = val.replace(/<[^>]*>?/gm, ''); // Previene inyección HTML estructurada
-    }
-    onChange(val);
+    onChange(e.target.value);
   };
 
   return (
