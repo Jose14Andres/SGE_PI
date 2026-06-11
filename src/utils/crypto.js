@@ -35,10 +35,7 @@ const generateSessionSecret = () => {
   } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
     crypto.getRandomValues(array);
   } else {
-    // Fallback for tests if no crypto is available
-    for (let i = 0; i < array.length; i++) {
-      array[i] = Math.floor(Math.random() * 256);
-    }
+    throw new Error('No secure random number generator available.');
   }
   return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
 };
