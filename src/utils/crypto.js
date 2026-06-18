@@ -23,7 +23,13 @@ export async function hashPassword(password) {
  */
 export function secureRandom() {
   const array = new Uint32Array(1);
-  window.crypto.getRandomValues(array);
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    window.crypto.getRandomValues(array);
+  } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    crypto.getRandomValues(array);
+  } else {
+    throw new Error('No secure random number generator available.');
+  }
   return array[0] / (0xffffffff + 1);
 }
 
