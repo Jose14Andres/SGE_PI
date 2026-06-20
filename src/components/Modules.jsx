@@ -54,8 +54,17 @@ function CrudModule({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-    if (editingItem) onEdit({ ...editingItem, ...formData });
-    else onAdd(formData);
+
+    // SECURITY: Prevent mass assignment by only extracting fields defined in formFields
+    const permittedData = {};
+    formFields.forEach(f => {
+      if (formData[f.key] !== undefined) {
+        permittedData[f.key] = formData[f.key];
+      }
+    });
+
+    if (editingItem) onEdit({ ...editingItem, ...permittedData });
+    else onAdd(permittedData);
     closeModal();
   };
 
