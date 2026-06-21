@@ -106,7 +106,7 @@ export default function App() {
 
     // Attach profesorId link
     const prof = profesores.find(p => p.email === foundUser.email);
-    const sessionUser = { ...foundUser, profesorId: prof?.id ?? null };
+    const { password: _, ...sessionUser } = { ...foundUser, profesorId: prof?.id ?? null };
     setUser(sessionUser);
 
     // Save session securely
