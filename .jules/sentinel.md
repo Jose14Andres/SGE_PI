@@ -79,3 +79,8 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Vulnerability:** The application used a fragile regex (`val.replace(/<[^>]*>?/gm, '')`) for input sanitization, which could lead to bypasses or data corruption. Furthermore, the mock HMAC session generation (`src/utils/crypto.js`) fell back to the insecure `Math.random()` if a cryptographic random generator was not found.
 **Learning:** In purely React-rendered apps, relying on React's automatic contextual output escaping is significantly safer than implementing fragile custom regex-based tag-stripping (unless `dangerouslySetInnerHTML` is explicitly used). Also, cryptographic processes must fail-securely rather than silently downgrading to insecure algorithms.
 **Prevention:** Remove custom tag-stripping and delegate XSS protection to React’s renderer. Ensure any fallback for cryptographic material generation throws a hard error rather than utilizing `Math.random()`.
+
+## 2025-02-23 - [Preventing Information Disclosure in Frontend Session State]
+**Vulnerability:** The application was storing the full `user` object in `sessionStorage` and the global `user` state after authentication. This included the user's password hash (`password`), leading to an Information Disclosure vulnerability.
+**Learning:** Sensitive fields like password hashes should never be stored in `sessionStorage` or global frontend state, as they are accessible by client-side scripts and browser developer tools.
+**Prevention:** In frontend authentication handlers (e.g., `handleLogin` and `loadSession` in `App.jsx`), explicitly strip sensitive fields using object destructuring (e.g., `const { password: _, ...safeUser } = user`) before storing the user session in state or `sessionStorage`.
