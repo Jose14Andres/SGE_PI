@@ -48,7 +48,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
       {/* Logo */}
       <div className="px-6 pt-6 pb-4 border-b border-[#E2E8F0]/20">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#0052CC]/20 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
+          <div className="w-9 h-9 rounded-xl bg-[#0066FF]/20 border border-[#FF0033]/30 flex items-center justify-center text-[#FF0033]">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 14l9-5-9-5-9 5 9 5zm0 7l-9-5v-7l9 5 9-5v7l-9 5z" />
             </svg>
@@ -87,7 +87,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
                     onClick={() => { onNavigate(item.id); setMobileOpen(false); }}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all text-left
                       ${currentView === item.id
-                        ? 'bg-[#0052CC]/20 text-[#00E5FF] border border-[#00E5FF]/30 shadow-sm shadow-[#00E5FF]/10'
+                        ? 'bg-[#0066FF]/20 text-[#FF0033] border border-[#FF0033]/30 shadow-sm shadow-[#FF0033]/10'
                         : 'text-slate-400 hover:text-[#F4F6F9] hover:bg-white/5 border border-transparent'}`}
                   >
                     <span className="text-base leading-none">{item.icon}</span>
@@ -124,15 +124,15 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-[#0B132B] backdrop-blur-md border-r border-[#E2E8F0]/20 flex-shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-[#000000] backdrop-blur-md border-r border-[#E2E8F0]/20 flex-shrink-0">
         {renderSidebarContent()}
       </aside>
 
       {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden flex">
-          <div className="fixed inset-0 bg-[#0B132B] backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <aside className="relative z-50 flex flex-col w-64 bg-[#0B132B] border-r border-[#E2E8F0]/20 animate-slide-in">
+          <div className="fixed inset-0 bg-[#000000] backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <aside className="relative z-50 flex flex-col w-64 bg-[#000000] border-r border-[#E2E8F0]/20 animate-slide-in">
             {renderSidebarContent()}
           </aside>
         </div>
@@ -141,7 +141,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header (mobile) */}
-        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0B132B] backdrop-blur-md border-b border-[#E2E8F0]/20">
+        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#000000] backdrop-blur-md border-b border-[#E2E8F0]/20">
           <button onClick={() => setMobileOpen(true)} aria-label="Abrir menú de navegación" aria-expanded={mobileOpen} className="text-slate-400 hover:text-[#F4F6F9] p-1">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
@@ -152,7 +152,7 @@ export default function Layout({ user, currentView, onNavigate, onLogout, childr
         </header>
 
         {/* Top bar (desktop) with breadcrumb */}
-        <div className="hidden md:flex items-center justify-between px-6 py-3 border-b border-[#E2E8F0]/10 bg-[#0B132B]">
+        <div className="hidden md:flex items-center justify-between px-6 py-3 border-b border-[#E2E8F0]/10 bg-[#000000]">
           <div className="flex items-center gap-2 text-sm">
             <span className="text-slate-500">SGE</span>
             <span className="text-slate-700">/</span>

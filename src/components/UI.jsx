@@ -5,9 +5,9 @@ export const Avatar = React.memo(function Avatar({ user, size = 'md' }) {
   const sizes = { sm: 'w-8 h-8 text-xs', md: 'w-10 h-10 text-sm', lg: 'w-16 h-16 text-xl' };
   const initials = user ? `${user.nombre?.[0] ?? ''}${user.apellido?.[0] ?? ''}`.toUpperCase() : '?';
   return user?.avatar
-    ? <img src={user.avatar} alt="avatar" className={`${sizes[size]} rounded-full object-cover border-2 border-[#00E5FF]/40`} />
+    ? <img src={user.avatar} alt="avatar" className={`${sizes[size]} rounded-full object-cover border-2 border-[#FF0033]/40`} />
     : (
-      <div className={`${sizes[size]} rounded-full bg-[#0052CC]/20 border-2 border-[#00E5FF]/40 flex items-center justify-center font-semibold text-[#00E5FF]`}>
+      <div className={`${sizes[size]} rounded-full bg-[#0066FF]/20 border-2 border-[#FF0033]/40 flex items-center justify-center font-semibold text-[#FF0033]`}>
         {initials}
       </div>
     );
@@ -22,10 +22,10 @@ export const Toast = React.memo(function Toast({ toasts, removeToast }) {
           key={t.id}
           role="alert"
           onClick={() => removeToast(t.id)}
-          className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] border text-sm font-medium cursor-pointer animate-toast-in backdrop-blur-md
+          className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-[0_8px_32px_0_rgba(255, 0, 51,0.05)] border text-sm font-medium cursor-pointer animate-toast-in backdrop-blur-md
             ${t.type === 'success' ? 'bg-emerald-900/80 border-emerald-500/30 text-emerald-300' :
               t.type === 'error' ? 'bg-red-900/80 border-red-500/30 text-red-300' :
-              'bg-[#1C2541]/80 border-[#E2E8F0]/20 text-slate-300'}`}
+              'bg-[#111111]/80 border-[#E2E8F0]/20 text-slate-300'}`}
         >
           {t.type === 'success' && <span className="text-emerald-400">✓</span>}
           {t.type === 'error' && <span className="text-red-400">✗</span>}
@@ -45,8 +45,8 @@ export function Modal({ title, children, onClose }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-[#0B132B] backdrop-blur-sm z-40 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] w-full max-w-lg max-h-[90vh] flex flex-col animate-slide-in">
+    <div className="fixed inset-0 bg-[#000000] backdrop-blur-sm z-40 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-[#111111]/80 border border-[#E2E8F0]/20 rounded-2xl shadow-[0_8px_32px_0_rgba(255, 0, 51,0.05)] w-full max-w-lg max-h-[90vh] flex flex-col animate-slide-in">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]/20">
           <h3 className="font-serif text-lg font-semibold text-[#F4F6F9]">{title}</h3>
           <button onClick={onClose} aria-label="Cerrar modal" title="Cerrar" className="text-slate-500 hover:text-[#F4F6F9] transition-colors">
@@ -62,8 +62,8 @@ export function Modal({ title, children, onClose }) {
 /* ─── Confirm Dialog ─────────────────────────────── */
 export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConfirm, onCancel }) {
   return (
-    <div className="fixed inset-0 bg-[#0B132B] backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] w-full max-w-sm p-6 animate-slide-in">
+    <div className="fixed inset-0 bg-[#000000] backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-[#111111]/80 border border-[#E2E8F0]/20 rounded-2xl shadow-[0_8px_32px_0_rgba(255, 0, 51,0.05)] w-full max-w-sm p-6 animate-slide-in">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
             <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
@@ -82,7 +82,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({ message, onConf
 
 /* ─── Form Field ─────────────────────────────────── */
 export const Field = React.memo(function Field({ label, id, type = 'text', value, onChange, options, required, placeholder, maxLength }) {
-  const base = "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-sm";
+  const base = "w-full bg-[#000000] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#FF0033] focus:ring-1 focus:ring-[#FF0033] transition-all text-sm";
   
   // Sanitización delegada al motor de renderizado de React.
   const handleSanitizedChange = (e) => {
@@ -95,7 +95,7 @@ export const Field = React.memo(function Field({ label, id, type = 'text', value
       {type === 'select'
         ? <select id={id} value={value} onChange={handleSanitizedChange} required={required} className={base}>
             <option value="">— Seleccionar —</option>
-            {options?.map(o => <option key={o.value} value={o.value} className="bg-[#0B132B]">{o.label}</option>)}
+            {options?.map(o => <option key={o.value} value={o.value} className="bg-[#000000]">{o.label}</option>)}
           </select>
         : <input id={id} type={type} value={value} onChange={handleSanitizedChange} required={required} placeholder={placeholder} maxLength={maxLength}
             className={base} />
@@ -107,14 +107,14 @@ export const Field = React.memo(function Field({ label, id, type = 'text', value
 /* ─── Select (standalone dropdown control) ──────── */
 export function Select({ label, value, onChange, options, placeholder = '— Todos —', compact = false }) {
   const base = compact
-    ? "bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-xs min-w-[140px]"
-    : "w-full bg-[#0B132B] border border-[#E2E8F0]/20 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF] transition-all text-sm";
+    ? "bg-[#000000] border border-[#E2E8F0]/20 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-[#FF0033] focus:ring-1 focus:ring-[#FF0033] transition-all text-xs min-w-[140px]"
+    : "w-full bg-[#000000] border border-[#E2E8F0]/20 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-[#FF0033] focus:ring-1 focus:ring-[#FF0033] transition-all text-sm";
   return (
     <div className="flex flex-col gap-1">
       {label && <label className="text-[10px] uppercase tracking-wider text-slate-500 font-medium">{label}</label>}
       <select value={value ?? ''} onChange={e => onChange(e.target.value)} className={base}>
-        <option value="" className="bg-[#0B132B]">{placeholder}</option>
-        {options.map(o => <option key={o.value} value={o.value} className="bg-[#0B132B]">{o.label}</option>)}
+        <option value="" className="bg-[#000000]">{placeholder}</option>
+        {options.map(o => <option key={o.value} value={o.value} className="bg-[#000000]">{o.label}</option>)}
       </select>
     </div>
   );
@@ -124,7 +124,7 @@ export function Select({ label, value, onChange, options, placeholder = '— Tod
 export function FilterBar({ filters, values, onChange, onReset }) {
   const hasActive = Object.values(values).some(v => v !== '' && v != null);
   return (
-    <div className="flex flex-wrap items-end gap-3 bg-[#0B132B] border border-[#E2E8F0]/10 rounded-xl p-3">
+    <div className="flex flex-wrap items-end gap-3 bg-[#000000] border border-[#E2E8F0]/10 rounded-xl p-3">
       <div className="flex items-center gap-2 text-xs text-slate-500 uppercase tracking-wider pr-2">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -211,7 +211,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
 
   const sortIcon = (key) => {
     if (sort.key !== key) return <span className="text-slate-700">↕</span>;
-    return sort.dir === 'asc' ? <span className="text-[#00E5FF]">↑</span> : <span className="text-[#00E5FF]">↓</span>;
+    return sort.dir === 'asc' ? <span className="text-[#FF0033]">↑</span> : <span className="text-[#FF0033]">↓</span>;
   };
 
   return (
@@ -225,7 +225,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar..."
-              className="w-full sm:w-80 bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-lg pl-9 pr-4 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#00E5FF] text-sm"
+              className="w-full sm:w-80 bg-[#111111]/80 border border-[#E2E8F0]/20 rounded-lg pl-9 pr-4 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#FF0033] text-sm"
             />
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -233,7 +233,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
             <select
               value={perPage}
               onChange={e => setPerPage(Number(e.target.value))}
-              className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-md px-2 py-1 text-slate-200 focus:outline-none focus:border-[#00E5FF] text-xs"
+              className="bg-[#111111]/80 border border-[#E2E8F0]/20 rounded-md px-2 py-1 text-slate-200 focus:outline-none focus:border-[#FF0033] text-xs"
             >
               {[10, 25, 50, 100].map(n => <option key={n} value={n}>{n}</option>)}
             </select>
@@ -245,7 +245,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
       <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]/20">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
+            <tr className="bg-[#111111]/80 border-b border-[#E2E8F0]/20">
               {columns.map(c => (
                 <th
                   key={c.key}
@@ -280,7 +280,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
                         {onEdit && (
-                          <button onClick={() => onEdit(row)} className="text-xs px-3 py-1.5 bg-[#0052CC]/10 hover:bg-[#0052CC]/20 text-[#00E5FF] border border-[#00E5FF]/20 rounded-lg transition-all">
+                          <button onClick={() => onEdit(row)} className="text-xs px-3 py-1.5 bg-[#0066FF]/10 hover:bg-[#0066FF]/20 text-[#FF0033] border border-[#FF0033]/20 rounded-lg transition-all">
                             Editar
                           </button>
                         )}
@@ -338,7 +338,7 @@ export const DataTable = React.memo(function DataTable({ columns, data, onEdit, 
 /* ─── Stat Card ──────────────────────────────────── */
 export const StatCard = React.memo(function StatCard({ label, value, icon, color = 'accent', hint }) {
   const colors = {
-    accent: 'bg-[#0052CC]/10 border-[#00E5FF]/20 text-[#00E5FF]',
+    accent: 'bg-[#0066FF]/10 border-[#FF0033]/20 text-[#FF0033]',
     gold: 'bg-gold/10 border-gold/20 text-gold',
     emerald: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
     violet: 'bg-violet-500/10 border-violet-500/20 text-violet-400',
@@ -346,7 +346,7 @@ export const StatCard = React.memo(function StatCard({ label, value, icon, color
     sky: 'bg-sky-500/10 border-sky-500/20 text-sky-400',
   };
   return (
-    <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-2xl p-5 hover:border-white/20 transition-all">
+    <div className="bg-[#111111]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-2xl p-5 hover:border-white/20 transition-all">
       <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl border mb-4 ${colors[color]}`}>
         <span className="text-xl">{icon}</span>
       </div>
@@ -370,7 +370,7 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
     <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]/20 animate-pulse">
       <table className="w-full">
         <thead>
-          <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
+          <tr className="bg-[#111111]/80 border-b border-[#E2E8F0]/20">
             {Array.from({ length: cols }).map((_, i) => (
               <th key={i} className="px-4 py-3"><div className="h-3 bg-white/5 rounded w-20" /></th>
             ))}
@@ -400,7 +400,7 @@ export function SkeletonTable({ rows = 5, cols = 4 }) {
 export function Collapsible({ title, icon, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl overflow-hidden">
+    <div className="bg-[#111111]/80 border border-[#E2E8F0]/20 rounded-2xl overflow-hidden">
       <button
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
@@ -430,7 +430,7 @@ export function Tabs({ tabs, active, onChange }) {
             onClick={() => onChange(t.id)}
             className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-all
               ${active === t.id
-                ? 'text-[#00E5FF] border-[#00E5FF]'
+                ? 'text-[#FF0033] border-[#FF0033]'
                 : 'text-slate-500 hover:text-slate-300 border-transparent'}`}
           >
             {t.icon && <span className="mr-2">{t.icon}</span>}
@@ -486,7 +486,7 @@ export function DropdownMenu({ trigger, items, align = 'right' }) {
         {trigger}
       </button>
       {open && (
-        <div className={`absolute z-30 mt-2 min-w-[180px] bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-xl shadow-[0_8px_32px_0_rgba(0,229,255,0.05)] overflow-hidden animate-fade-in ${align === 'right' ? 'right-0' : 'left-0'}`}>
+        <div className={`absolute z-30 mt-2 min-w-[180px] bg-[#111111]/80 border border-[#E2E8F0]/20 rounded-xl shadow-[0_8px_32px_0_rgba(255, 0, 51,0.05)] overflow-hidden animate-fade-in ${align === 'right' ? 'right-0' : 'left-0'}`}>
           {items.map((it, i) => (
             <button
               key={i}
