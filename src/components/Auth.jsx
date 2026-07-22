@@ -109,18 +109,18 @@ export default function Auth({ onLogin }) {
       <div className="w-full max-w-md">
         {/* Logo / Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0066FF]/20 border border-[#FF0033]/30 mb-4">
-            <svg className="w-8 h-8 text-[#FF0033]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-accent/20 border border-red-accent/30 mb-4">
+            <svg className="w-8 h-8 text-red-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 14l9-5-9-5-9 5 9 5zm0 7l-9-5v-7l9 5 9-5v7l-9 5z" />
             </svg>
           </div>
-          <h1 className="font-serif text-3xl font-bold text-[#F4F6F9] mb-1">SGE</h1>
+          <h1 className="font-serif text-3xl font-bold text-slate-100 mb-1">SGE</h1>
           <p className="text-slate-400 text-sm">Sistema de Gestión Estudiantil</p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#111111]/80 backdrop-blur-md border border-[#E2E8F0]/20 rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(255, 0, 51,0.05)]">
-          <h2 className="font-serif text-xl font-semibold text-[#F4F6F9] mb-6">Iniciar Sesión</h2>
+        <div className="bg-dark-grey/80 backdrop-blur-md border border-slate-200/20 rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(255,0,51,0.05)]">
+          <h2 className="font-serif text-xl font-semibold text-slate-100 mb-6">Iniciar Sesión</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Correo Electrónico</label>
@@ -132,7 +132,7 @@ export default function Auth({ onLogin }) {
                 onChange={e => setEmail(e.target.value)}
                 maxLength={100}
                 placeholder="usuario@sge.edu"
-                className="w-full bg-[#000000] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#FF0033] focus:ring-1 focus:ring-[#FF0033] transition-all text-sm"
+                className="w-full bg-pure-black border border-slate-200/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-red-accent focus:ring-1 focus:ring-red-accent transition-all text-sm"
               />
             </div>
             <div>
@@ -145,7 +145,7 @@ export default function Auth({ onLogin }) {
                 onChange={e => setPassword(e.target.value)}
                 maxLength={100}
                 placeholder="••••••••"
-                className="w-full bg-[#000000] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#FF0033] focus:ring-1 focus:ring-[#FF0033] transition-all text-sm"
+                className="w-full bg-pure-black border border-slate-200/20 rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-red-accent focus:ring-1 focus:ring-red-accent transition-all text-sm"
               />
             </div>
             <div>
@@ -155,9 +155,9 @@ export default function Auth({ onLogin }) {
                 aria-label="Rol"
                 value={role}
                 onChange={e => setRole(e.target.value)}
-                className="w-full bg-[#000000] border border-[#E2E8F0]/20 rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-[#FF0033] focus:ring-1 focus:ring-[#FF0033] transition-all text-sm"
+                className="w-full bg-pure-black border border-slate-200/20 rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-red-accent focus:ring-1 focus:ring-red-accent transition-all text-sm"
               >
-                {ROLES.map(r => <option key={r} value={r} className="bg-[#000000]">{r}</option>)}
+                {ROLES.map(r => <option key={r} value={r} className="bg-pure-black">{r}</option>)}
               </select>
             </div>
 
@@ -171,10 +171,10 @@ export default function Auth({ onLogin }) {
               id="login-submit"
               type="submit"
               disabled={isLockedOut}
-              className={`w-full transition-colors py-3 rounded-lg font-medium text-[#F4F6F9] shadow-lg shadow-[#FF0033]/20 text-sm ${
+              className={`w-full transition-colors py-3 rounded-lg font-medium text-slate-100 shadow-lg shadow-red-accent/20 text-sm ${
                 isLockedOut
                   ? 'bg-gray-600 cursor-not-allowed opacity-70'
-                  : 'bg-gradient-to-r from-[#0066FF] to-[#FF0033] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#FF0033] active:scale-[0.98]'
+                  : 'bg-gradient-to-r from-blue-accent to-red-accent hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-red-accent active:scale-[0.98]'
               }`}
             >
               {isLockedOut ? 'Bloqueado' : 'Iniciar Sesión'}
