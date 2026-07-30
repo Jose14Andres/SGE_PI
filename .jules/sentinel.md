@@ -80,6 +80,15 @@ Hardcoded test password vulnerability in Auth.jsx removed by allowing bypass in 
 **Learning:** In purely React-rendered apps, relying on React's automatic contextual output escaping is significantly safer than implementing fragile custom regex-based tag-stripping (unless `dangerouslySetInnerHTML` is explicitly used). Also, cryptographic processes must fail-securely rather than silently downgrading to insecure algorithms.
 **Prevention:** Remove custom tag-stripping and delegate XSS protection to React’s renderer. Ensure any fallback for cryptographic material generation throws a hard error rather than utilizing `Math.random()`.
 
+## 2026-06-21 - [Preventing Information Disclosure in Frontend Session State]
+**Vulnerability:** The `handleLogin` function was passing the entire `foundUser` object (which included the user's SHA-256 password hash from the mock database) directly into the `sessionUser` state. This object was then stringified and stored in `sessionStorage` in plain text, exposing the password hash to potential XSS attacks or local physical inspection.
+**Learning:** Sensitive data, such as password hashes, should never be stored in persistent client-side storage or global UI state, as it provides no functional value to the frontend session and significantly increases the risk of Information Disclosure.
+**Prevention:** Always strip sensitive fields (like `password`) from user objects using destructuring (`const { password: _, ...sessionUser } = foundUser;`) before persisting them to state managers or `sessionStorage`.
+
+## 2026-06-21 - [Avoiding Security Theater in Frontend UI Components]
+**Vulnerability:** A previous attempt to fix Mass Assignment vulnerabilities involved filtering keys out of a generic `formData` object before it was submitted in `Modules.jsx`.
+**Learning:** Filtering `formData` purely on the client-side based on visible UI fields is security theater. It provides no protection against an attacker who makes direct API requests (or modifies React state directly) and risks breaking functionality by stripping out necessary background properties (like `id` or relationship keys).
+**Prevention:** True Mass Assignment protection must happen at the data access or API layer (e.g., inside `App.jsx` handlers), where explicit picking/omitting of fields can be strictly enforced based on the authoritative schema.
 ## 2025-02-23 - [Preventing Information Disclosure in Frontend Session State]
 **Vulnerability:** The application was storing the full `user` object in `sessionStorage` and the global `user` state after authentication. This included the user's password hash (`password`), leading to an Information Disclosure vulnerability.
 **Learning:** Sensitive fields like password hashes should never be stored in `sessionStorage` or global frontend state, as they are accessible by client-side scripts and browser developer tools.

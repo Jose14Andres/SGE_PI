@@ -107,6 +107,7 @@ export default function App() {
 
     // Attach profesorId link
     const prof = profesores.find(p => p.email === foundUser.email);
+    const { password: _, ...sessionUser } = { ...foundUser, profesorId: prof?.id ?? null };
     const { password: _, ...safeUser } = foundUser;
     const sessionUser = { ...safeUser, profesorId: prof?.id ?? null };
     setUser(sessionUser);
