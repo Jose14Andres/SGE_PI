@@ -87,7 +87,7 @@ function CrudModule({
         </div>
         {!readonly && (
           <button id={`btn-add-${title.replace(/\s/g, '')}`} onClick={openAdd}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] px-4 py-2 rounded-xl text-sm font-medium text-[#F4F6F9] transition-colors shadow-lg shadow-[#00E5FF]/20">
+            className="flex items-center gap-2 bg-gradient-to-r from-[#0066FF] to-[#FF0033] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#FF0033] px-4 py-2 rounded-xl text-sm font-medium text-[#F4F6F9] transition-colors shadow-lg shadow-[#FF0033]/20">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
             Agregar
           </button>
@@ -129,7 +129,7 @@ function CrudModule({
             ))}
             <div className="flex gap-3 justify-end pt-2">
               <button type="button" onClick={closeModal} className="px-4 py-2 text-sm text-slate-400 hover:text-[#F4F6F9] border border-[#E2E8F0]/20 hover:border-white/20 rounded-lg transition-all">Cancelar</button>
-              <button type="submit" className="px-5 py-2 text-sm bg-gradient-to-r from-[#0052CC] to-[#00E5FF] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#00E5FF] text-[#F4F6F9] rounded-lg transition-colors font-medium">
+              <button type="submit" className="px-5 py-2 text-sm bg-gradient-to-r from-[#0066FF] to-[#FF0033] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#FF0033] text-[#F4F6F9] rounded-lg transition-colors font-medium">
                 {editingItem ? 'Guardar cambios' : 'Agregar'}
               </button>
             </div>
