@@ -16,9 +16,54 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
 
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#060d1f',
+              900: '#0f172a',
+              800: '#1e293b',
+              700: '#334155',
+            },
+            accent: {
+              DEFAULT: '#4f46e5',
+              light: '#6366f1',
+              dark: '#3730a3',
+            },
+            gold: {
+              DEFAULT: '#f59e0b',
+              light: '#fbbf24',
+              dark: '#d97706',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+          },
+          backdropBlur: {
+            xs: '2px',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.2s ease-out',
+            'slide-in': 'slideIn 0.2s ease-out',
+            'toast-in': 'toastIn 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideIn: { '0%': { opacity: '0', transform: 'translateY(-8px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            toastIn: { '0%': { opacity: '0', transform: 'translateX(100%)' }, '100%': { opacity: '1', transform: 'translateX(0)' } },
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body {
-      background-color: #000000;
+      background-color: #0B132B;
     }
 
     /* Subtle grid texture overlay */
@@ -27,8 +72,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255, 0, 51, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 0, 51, 0.05) 1px, transparent 1px);
+        linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -48,11 +93,11 @@
     }
 
     ::-webkit-scrollbar-track {
-      background: #111111;
+      background: #1C2541;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #0066FF;
+      background: #0052CC;
       border-radius: 3px;
     }
   </style>
