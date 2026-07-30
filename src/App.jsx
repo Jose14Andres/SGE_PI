@@ -60,7 +60,8 @@ export default function App() {
             // Prevent Role Tampering by matching role to our data (or strictly validating)
             const trueUser = users.find(u => u.id === storedUser.id);
             if (trueUser && trueUser.role === storedUser.role) {
-              setUser({ ...storedUser, profesorId: trueUser.role === 'Profesor' ? (profesores.find(p => p.email === trueUser.email)?.id ?? null) : null });
+              const { password: _, ...safeUser } = storedUser;
+              setUser({ ...safeUser, profesorId: trueUser.role === 'Profesor' ? (profesores.find(p => p.email === trueUser.email)?.id ?? null) : null });
               setLoading(false);
               return;
             }
@@ -107,6 +108,8 @@ export default function App() {
     // Attach profesorId link
     const prof = profesores.find(p => p.email === foundUser.email);
     const { password: _, ...sessionUser } = { ...foundUser, profesorId: prof?.id ?? null };
+    const { password: _, ...safeUser } = foundUser;
+    const sessionUser = { ...safeUser, profesorId: prof?.id ?? null };
     setUser(sessionUser);
 
     // Save session securely
