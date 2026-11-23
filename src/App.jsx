@@ -299,7 +299,7 @@ export default function App() {
           return <Profile user={user} onUpdateAvatar={handleUpdateAvatar} onUpdateProfile={handleUpdateProfile} onChangePassword={handleChangePassword} />;
 
         default:
-          return <div className="text-slate-400">Vista no encontrada</div>;
+          return <div className="text-netflix-secondary">Vista no encontrada</div>;
       }
     })();
 

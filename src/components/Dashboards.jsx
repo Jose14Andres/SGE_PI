@@ -54,7 +54,7 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
       key: 'rol',
       label: 'Rol',
       render: (r) => (
-        <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${r.rol === 'Profesor' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' : 'bg-[#0052CC]/10 text-[#00E5FF] border-[#00E5FF]/20'}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${r.rol === 'Profesor' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' : 'bg-white/5 text-netflix-primary border-netflix-border'}`}>
           {r.rol}
         </span>
       )
@@ -65,7 +65,7 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
       label: 'Acciones',
       render: () => (
         <div className="flex gap-2">
-          <button className="text-xs px-2 py-1 bg-[#0052CC]/20 text-[#00E5FF] rounded hover:bg-[#0052CC]/40 transition-colors">Editar</button>
+          <button className="text-xs px-2 py-1 bg-white/10 text-netflix-primary rounded hover:bg-white/15 transition-colors">Editar</button>
           <button className="text-xs px-2 py-1 bg-red-500/20 text-red-300 rounded hover:bg-red-500/40 transition-colors">Baja</button>
         </div>
       )
@@ -81,8 +81,8 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Consola de Control del Sistema</h1>
-        <p className="text-slate-400 text-sm mt-1">Panel Administrativo SGE_PI</p>
+        <h1 className="font-serif text-2xl font-bold text-netflix-primary">Consola de Control del Sistema</h1>
+        <p className="text-netflix-secondary text-sm mt-1">Panel Administrativo SGE_PI</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -103,10 +103,10 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
             onReset={() => setFilter({ rol: '', carrera: '' })}
           />
 
-          <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-5 backdrop-blur-sm">
+          <div className="bg-netflix-surface border border-netflix-border rounded-2xl p-5 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-serif text-lg font-semibold text-[#F4F6F9]">Directorio Central</h2>
-              <button className="bg-[#0052CC] text-[#F4F6F9] px-4 py-2 rounded-lg text-sm font-medium hover:brightness-110 transition-colors shadow-lg shadow-[#00E5FF]/20">
+              <h2 className="font-serif text-lg font-semibold text-netflix-primary">Directorio Central</h2>
+              <button className="bg-netflix-red text-netflix-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-netflix-red-dark transition-colors shadow-lg shadow-black/50">
                 + Nuevo Usuario
               </button>
             </div>
@@ -116,18 +116,18 @@ export function AdminDashboard({ alumnos, profesores, cursos }) {
       )}
 
       {activeTab === 'auditoria' && (
-        <div className="animate-fade-in bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+        <div className="animate-fade-in bg-netflix-surface border border-netflix-border rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
            <div className="text-4xl mb-4">📝</div>
-           <h3 className="text-[#F4F6F9] font-medium mb-1">Módulo de Auditoría en construcción</h3>
-           <p className="text-slate-500 text-sm">Visualice el registro de altas, bajas y modificaciones.</p>
+           <h3 className="text-netflix-primary font-medium mb-1">Módulo de Auditoría en construcción</h3>
+           <p className="text-netflix-muted text-sm">Visualice el registro de altas, bajas y modificaciones.</p>
         </div>
       )}
 
       {activeTab === 'sistema' && (
-        <div className="animate-fade-in bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+        <div className="animate-fade-in bg-netflix-surface border border-netflix-border rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
            <div className="text-4xl mb-4">⚙️</div>
-           <h3 className="text-[#F4F6F9] font-medium mb-1">Módulo de Sistema en construcción</h3>
-           <p className="text-slate-500 text-sm">Monitoreo de rendimiento, memoria y conectividad base de datos.</p>
+           <h3 className="text-netflix-primary font-medium mb-1">Módulo de Sistema en construcción</h3>
+           <p className="text-netflix-muted text-sm">Monitoreo de rendimiento, memoria y conectividad base de datos.</p>
         </div>
       )}
     </div>
@@ -168,8 +168,8 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Dashboard — Secretaría</h1>
-        <p className="text-slate-400 text-sm mt-1">Resumen de consulta del sistema</p>
+        <h1 className="font-serif text-2xl font-bold text-netflix-primary">Dashboard — Secretaría</h1>
+        <p className="text-netflix-secondary text-sm mt-1">Resumen de consulta del sistema</p>
       </div>
 
       <FilterBar
@@ -192,17 +192,17 @@ export function SecretaryDashboard({ alumnos, profesores, cursos, materias }) {
             const count = alumnosByCurso[c.id] || 0;
             const mats  = materiasByCurso[c.id] || 0;
             return (
-              <div key={c.id} className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-xl p-3 hover:border-[#00E5FF]/40 transition-all">
-                <div className="text-sm text-[#F4F6F9] font-medium">{c.carrera}</div>
-                <div className="text-xs text-slate-400 mt-0.5">{c.nivel} · Sección {c.paralelo}</div>
+              <div key={c.id} className="bg-netflix-surface backdrop-blur-sm border border-netflix-border rounded-xl p-3 hover:border-white/30 transition-all">
+                <div className="text-sm text-netflix-primary font-medium">{c.carrera}</div>
+                <div className="text-xs text-netflix-secondary mt-0.5">{c.nivel} · Sección {c.paralelo}</div>
                 <div className="flex gap-2 mt-2">
-                  <span className="text-[10px] bg-[#0052CC]/10 text-[#00E5FF] px-2 py-0.5 rounded-full border border-[#00E5FF]/20">{count} alumno{count !== 1 ? 's' : ''}</span>
+                  <span className="text-[10px] bg-white/5 text-netflix-primary px-2 py-0.5 rounded-full border border-netflix-border">{count} alumno{count !== 1 ? 's' : ''}</span>
                   <span className="text-[10px] bg-gold/10 text-gold px-2 py-0.5 rounded-full border border-gold/20">{mats} materia{mats !== 1 ? 's' : ''}</span>
                 </div>
               </div>
             );
           })}
-          {coursesFilt.length === 0 && <p className="text-slate-500 text-sm">No hay secciones con esos filtros.</p>}
+          {coursesFilt.length === 0 && <p className="text-netflix-muted text-sm">No hay secciones con esos filtros.</p>}
         </div>
       </Collapsible>
     </div>
@@ -250,7 +250,7 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
       label: 'Acciones',
       render: () => (
         <div className="flex gap-2">
-          <button className="text-xs px-2 py-1 bg-[#0052CC]/20 text-[#00E5FF] rounded hover:bg-[#0052CC]/40 transition-colors">Editar Nota</button>
+          <button className="text-xs px-2 py-1 bg-white/10 text-netflix-primary rounded hover:bg-white/15 transition-colors">Editar Nota</button>
           <button className="text-xs px-2 py-1 bg-red-500/20 text-red-300 rounded hover:bg-red-500/40 transition-colors">Reportar Falta</button>
         </div>
       )
@@ -260,8 +260,8 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Panel de Gestión de Clases</h1>
-        <p className="text-slate-400 text-sm mt-1">Prof. {user.nombre} {user.apellido}</p>
+        <h1 className="font-serif text-2xl font-bold text-netflix-primary">Panel de Gestión de Clases</h1>
+        <p className="text-netflix-secondary text-sm mt-1">Prof. {user.nombre} {user.apellido}</p>
       </div>
 
       {/* Sección Superior: StatCards */}
@@ -275,8 +275,8 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
       {/* Cuerpo Principal */}
       <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
 
-      <div className="bg-[#1C2541]/80 backdrop-blur-sm border border-[#E2E8F0]/20 rounded-xl p-3 flex flex-wrap items-end gap-3">
-        <div className="text-xs text-slate-500 uppercase tracking-wider pr-2 flex items-center gap-2">
+      <div className="bg-netflix-surface backdrop-blur-sm border border-netflix-border rounded-xl p-3 flex flex-wrap items-end gap-3">
+        <div className="text-xs text-netflix-muted uppercase tracking-wider pr-2 flex items-center gap-2">
           <span>📚</span> Seleccionar Materia
         </div>
         <Select
@@ -289,31 +289,31 @@ export function ProfesorDashboard({ user, materias, alumnos }) {
       </div>
 
       {activeTab === 'calificaciones' && (
-        <div className="animate-fade-in bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-5 backdrop-blur-sm">
-          <h2 className="font-serif text-lg font-semibold text-[#F4F6F9] mb-4">
+        <div className="animate-fade-in bg-netflix-surface border border-netflix-border rounded-2xl p-5 backdrop-blur-sm">
+          <h2 className="font-serif text-lg font-semibold text-netflix-primary mb-4">
             Alumnos {materiaElegida ? `de ${materiaElegida.nombre}` : ''}
           </h2>
           {alumnosDelCurso.length > 0 ? (
             <DataTable columns={colCalificaciones} data={alumnosDelCurso} pageSize={10} />
           ) : (
-            <p className="text-slate-500 text-sm">No hay alumnos asignados a esta materia.</p>
+            <p className="text-netflix-muted text-sm">No hay alumnos asignados a esta materia.</p>
           )}
         </div>
       )}
 
       {activeTab === 'asistencia' && (
-        <div className="animate-fade-in bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+        <div className="animate-fade-in bg-netflix-surface border border-netflix-border rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
            <div className="text-4xl mb-4">✅</div>
-           <h3 className="text-[#F4F6F9] font-medium mb-1">Módulo de Asistencia en construcción</h3>
-           <p className="text-slate-500 text-sm">Seleccione la pestaña de calificaciones para ver el listado interactivo.</p>
+           <h3 className="text-netflix-primary font-medium mb-1">Módulo de Asistencia en construcción</h3>
+           <p className="text-netflix-muted text-sm">Seleccione la pestaña de calificaciones para ver el listado interactivo.</p>
         </div>
       )}
 
       {activeTab === 'horarios' && (
-        <div className="animate-fade-in bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
+        <div className="animate-fade-in bg-netflix-surface border border-netflix-border rounded-2xl p-10 flex flex-col items-center justify-center text-center backdrop-blur-sm">
            <div className="text-4xl mb-4">📅</div>
-           <h3 className="text-[#F4F6F9] font-medium mb-1">Módulo de Horarios en construcción</h3>
-           <p className="text-slate-500 text-sm">Seleccione la pestaña de calificaciones para ver el listado interactivo.</p>
+           <h3 className="text-netflix-primary font-medium mb-1">Módulo de Horarios en construcción</h3>
+           <p className="text-netflix-muted text-sm">Seleccione la pestaña de calificaciones para ver el listado interactivo.</p>
         </div>
       )}
     </div>
@@ -341,11 +341,11 @@ export function AlumnoDashboard({ user, alumnos, cursos, materias }) {
     <div className="space-y-6">
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Mi Progreso Académico</h1>
-          <p className="text-slate-400 text-sm mt-1">Hola, {user.nombre} {user.apellido}</p>
+          <h1 className="font-serif text-2xl font-bold text-netflix-primary">Mi Progreso Académico</h1>
+          <p className="text-netflix-secondary text-sm mt-1">Hola, {user.nombre} {user.apellido}</p>
         </div>
         {seccion && (
-          <span className="inline-flex items-center gap-2 bg-[#0052CC]/10 border border-[#00E5FF]/30 text-[#00E5FF] px-4 py-1.5 rounded-full text-sm font-semibold">
+          <span className="inline-flex items-center gap-2 bg-white/5 border border-netflix-border text-netflix-primary px-4 py-1.5 rounded-full text-sm font-semibold">
             <span className="w-2 h-2 rounded-full brightness-110"></span>
             {seccion.carrera} · {seccion.nivel} · Sección {seccion.paralelo}
           </span>
@@ -373,14 +373,14 @@ export function AlumnoDashboard({ user, alumnos, cursos, materias }) {
           ].map(modulo => (
             <div
               key={modulo.id}
-              className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-5 cursor-pointer hover:scale-[1.02] hover:border-[#00E5FF]/40 transition-all group flex flex-col items-center text-center gap-3 backdrop-blur-sm"
+              className="bg-netflix-surface border border-netflix-border rounded-2xl p-5 cursor-pointer hover:scale-[1.02] hover:border-white/30 transition-all group flex flex-col items-center text-center gap-3 backdrop-blur-sm"
             >
-              <div className="w-12 h-12 rounded-full bg-[#0B132B] flex items-center justify-center text-2xl group-hover:bg-[#0052CC]/20 transition-colors">
+              <div className="w-12 h-12 rounded-full bg-netflix-bg flex items-center justify-center text-2xl group-hover:bg-white/10 transition-colors">
                 {modulo.icon}
               </div>
               <div>
-                <h3 className="text-[#F4F6F9] font-medium text-sm">{modulo.label}</h3>
-                <p className="text-xs text-slate-400 mt-1">{modulo.desc}</p>
+                <h3 className="text-netflix-primary font-medium text-sm">{modulo.label}</h3>
+                <p className="text-xs text-netflix-secondary mt-1">{modulo.desc}</p>
               </div>
             </div>
           ))}
@@ -388,27 +388,27 @@ export function AlumnoDashboard({ user, alumnos, cursos, materias }) {
 
         {/* Columna Derecha (35%) */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-5 backdrop-blur-sm">
-            <h2 className="font-serif text-base font-semibold text-[#F4F6F9] mb-4">Rendimiento (Último período)</h2>
-            <div className="h-[200px] w-full rounded-xl overflow-hidden bg-[#0B132B]">
-              <Suspense fallback={<div className="h-full flex items-center justify-center text-slate-500">Cargando 3D...</div>}>
+          <div className="bg-netflix-surface border border-netflix-border rounded-2xl p-5 backdrop-blur-sm">
+            <h2 className="font-serif text-base font-semibold text-netflix-primary mb-4">Rendimiento (Último período)</h2>
+            <div className="h-[200px] w-full rounded-xl overflow-hidden bg-netflix-bg">
+              <Suspense fallback={<div className="h-full flex items-center justify-center text-netflix-muted">Cargando 3D...</div>}>
                 <BarChart3D data={rendimientoData} />
               </Suspense>
             </div>
           </div>
 
-          <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-5 backdrop-blur-sm">
-            <h2 className="font-serif text-base font-semibold text-[#F4F6F9] mb-3 flex items-center gap-2">
+          <div className="bg-netflix-surface border border-netflix-border rounded-2xl p-5 backdrop-blur-sm">
+            <h2 className="font-serif text-base font-semibold text-netflix-primary mb-3 flex items-center gap-2">
               <span>🔔</span> Avisos del Campus
             </h2>
             <div className="space-y-3">
-              <div className="p-3 bg-[#0052CC]/10 border border-[#00E5FF]/20 rounded-xl">
-                <p className="text-xs font-medium text-[#00E5FF]">Inicio de matrículas extraordinarias</p>
-                <p className="text-[10px] text-slate-400 mt-1">15 de Junio, 2024</p>
+              <div className="p-3 bg-white/5 border border-netflix-border rounded-xl">
+                <p className="text-xs font-medium text-netflix-primary">Inicio de matrículas extraordinarias</p>
+                <p className="text-[10px] text-netflix-secondary mt-1">15 de Junio, 2024</p>
               </div>
-              <div className="p-3 bg-white/5 border border-[#E2E8F0]/20 rounded-xl">
-                <p className="text-xs font-medium text-slate-200">Mantenimiento del Sistema</p>
-                <p className="text-[10px] text-slate-400 mt-1">Este fin de semana de 00:00 a 04:00</p>
+              <div className="p-3 bg-white/5 border border-netflix-border rounded-xl">
+                <p className="text-xs font-medium text-netflix-primary">Mantenimiento del Sistema</p>
+                <p className="text-[10px] text-netflix-secondary mt-1">Este fin de semana de 00:00 a 04:00</p>
               </div>
             </div>
           </div>
@@ -459,8 +459,8 @@ export function ProfesorMisMaterias({ user, materias, cursos }) {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Mis Materias</h1>
-        <p className="text-slate-400 text-sm mt-1">{filtered.length} de {misMaterias.length} materia{misMaterias.length !== 1 ? 's' : ''}</p>
+        <h1 className="font-serif text-2xl font-bold text-netflix-primary">Mis Materias</h1>
+        <p className="text-netflix-secondary text-sm mt-1">{filtered.length} de {misMaterias.length} materia{misMaterias.length !== 1 ? 's' : ''}</p>
       </div>
       <FilterBar filters={filters} values={filter} onChange={setFilter} onReset={() => setFilter({ carrera: '', nivel: '', cursoId: '' })} />
       <DataTable columns={cols} data={filtered} />
@@ -510,8 +510,8 @@ export function ProfesorMisAlumnos({ user, materias, alumnos, cursos }) {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Mis Alumnos</h1>
-        <p className="text-slate-400 text-sm mt-1">{filtered.length} de {misAlumnos.length} alumno{misAlumnos.length !== 1 ? 's' : ''}</p>
+        <h1 className="font-serif text-2xl font-bold text-netflix-primary">Mis Alumnos</h1>
+        <p className="text-netflix-secondary text-sm mt-1">{filtered.length} de {misAlumnos.length} alumno{misAlumnos.length !== 1 ? 's' : ''}</p>
       </div>
       <FilterBar filters={filters} values={filter} onChange={setFilter} onReset={() => setFilter({ carrera: '', nivel: '', cursoId: '' })} />
       <DataTable columns={cols} data={filtered} />
@@ -554,7 +554,7 @@ export function AlumnoMisMaterias({ user, alumnos, materias, profesores, compact
 
   return (
     <div className="space-y-5">
-      {!compact && <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Mis Materias</h1>}
+      {!compact && <h1 className="font-serif text-2xl font-bold text-netflix-primary">Mis Materias</h1>}
       {profOpts.length > 1 && (
         <FilterBar filters={filters} values={filter} onChange={setFilter} onReset={() => setFilter({ profesorId: '' })} />
       )}
@@ -611,15 +611,15 @@ export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
   const diasOpts = DAYS.map(asOpt);
 
   if (!alumno) {
-    return <div className="text-slate-500">No se encontró información del alumno.</div>;
+    return <div className="text-netflix-muted">No se encontró información del alumno.</div>;
   }
 
   return (
     <div className="space-y-5">
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-[#F4F6F9]">Mi Horario Semanal</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="font-serif text-2xl font-bold text-netflix-primary">Mi Horario Semanal</h1>
+          <p className="text-netflix-secondary text-sm mt-1">
             {seccion ? `${seccion.carrera} · ${seccion.nivel} · Sección ${seccion.paralelo}` : 'Sin sección asignada'}
           </p>
         </div>
@@ -646,38 +646,38 @@ export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
       </div>
 
       {myMaterias.length === 0 ? (
-        <div className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-2xl p-8 text-center text-slate-500 text-sm">
+        <div className="bg-netflix-surface border border-netflix-border rounded-2xl p-8 text-center text-netflix-muted text-sm">
           No tienes materias asignadas — el horario aparecerá cuando estés inscrito en una sección con materias.
         </div>
       ) : view === 'semanal' ? (
-        <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0]/20">
+        <div className="overflow-x-auto rounded-2xl border border-netflix-border">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#1C2541]/80 border-b border-[#E2E8F0]/20">
-                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider w-32">Hora</th>
+              <tr className="bg-netflix-surface border-b border-netflix-border">
+                <th className="px-4 py-3 text-left text-xs font-medium text-netflix-secondary uppercase tracking-wider w-32">Hora</th>
                 {DAYS.map(d => (
-                  <th key={d} className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">{d}</th>
+                  <th key={d} className="px-4 py-3 text-left text-xs font-medium text-netflix-secondary uppercase tracking-wider">{d}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {TIME_SLOTS.map((slot, i) => (
                 <tr key={slot} className="hover:bg-white/5 transition-colors">
-                  <td className="px-4 py-3 text-xs text-slate-500 font-mono whitespace-nowrap">{slot}</td>
+                  <td className="px-4 py-3 text-xs text-netflix-muted font-mono whitespace-nowrap">{slot}</td>
                   {DAYS.map(d => {
                     const m = grid[d][i];
                     return (
                       <td key={d} className="px-4 py-3 align-top">
                         {m
-                          ? <div className="bg-[#0052CC]/10 border border-[#00E5FF]/20 rounded-lg px-3 py-2 min-w-[140px]">
-                              <div className="text-[#00E5FF] text-xs font-semibold truncate">{m.nombre}</div>
-                              <div className="text-[10px] text-slate-500 truncate">{m.codigo}</div>
+                          ? <div className="bg-white/5 border border-netflix-border rounded-lg px-3 py-2 min-w-[140px]">
+                              <div className="text-netflix-primary text-xs font-semibold truncate">{m.nombre}</div>
+                              <div className="text-[10px] text-netflix-muted truncate">{m.codigo}</div>
                               {profesores && (() => {
                                 const p = profById[m.profesorId];
-                                return p ? <div className="text-[10px] text-slate-400 mt-1 truncate">Prof. {p.apellido}</div> : null;
+                                return p ? <div className="text-[10px] text-netflix-secondary mt-1 truncate">Prof. {p.apellido}</div> : null;
                               })()}
                             </div>
-                          : <span className="text-slate-700 text-xs">—</span>
+                          : <span className="text-netflix-muted text-xs">—</span>
                         }
                       </td>
                     );
@@ -690,18 +690,18 @@ export function AlumnoHorario({ user, alumnos, materias, profesores, cursos }) {
       ) : (
         <div className="space-y-3">
           {(diaFiltro ? [diaFiltro] : DAYS).map(d => (
-            <div key={d} className="bg-[#1C2541]/80 border border-[#E2E8F0]/20 rounded-xl p-4">
-              <h3 className="text-[#F4F6F9] font-semibold text-sm mb-3">{d}</h3>
+            <div key={d} className="bg-netflix-surface border border-netflix-border rounded-xl p-4">
+              <h3 className="text-netflix-primary font-semibold text-sm mb-3">{d}</h3>
               <div className="space-y-2">
                 {grid[d].map((m, i) => (
                   <div key={i} className="flex items-center gap-3 text-sm">
-                    <span className="text-xs text-slate-500 font-mono w-28 shrink-0">{TIME_SLOTS[i]}</span>
+                    <span className="text-xs text-netflix-muted font-mono w-28 shrink-0">{TIME_SLOTS[i]}</span>
                     {m
-                      ? <div className="flex-1 bg-[#0052CC]/10 border border-[#00E5FF]/20 rounded-lg px-3 py-1.5">
-                          <span className="text-[#00E5FF] text-xs font-medium">{m.nombre}</span>
-                          <span className="text-[10px] text-slate-500 ml-2">{m.codigo}</span>
+                      ? <div className="flex-1 bg-white/5 border border-netflix-border rounded-lg px-3 py-1.5">
+                          <span className="text-netflix-primary text-xs font-medium">{m.nombre}</span>
+                          <span className="text-[10px] text-netflix-muted ml-2">{m.codigo}</span>
                         </div>
-                      : <span className="text-slate-700 text-xs">— libre —</span>
+                      : <span className="text-netflix-muted text-xs">— libre —</span>
                     }
                   </div>
                 ))}
